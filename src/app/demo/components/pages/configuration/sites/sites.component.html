@@ -1,0 +1,474 @@
+<p-toast></p-toast>
+<div class="card m-0 mb-3 p-2">
+    <div class="row text-center fs-2 align-self-center">
+        Configuration des sites
+    </div>
+    <!-- <div class="d-flex flex-row justify-content-around">
+        <div class="col-6 ">
+            <p-floatLabel  [style]="{width:'100%'}">
+                    <p-dropdown
+                        [options]="listSites"
+                        [(ngModel)]="site"
+                        [filter]="true"
+                        filterBy="name"
+                        [showClear]="true"
+                        optionLabel="name"
+                        [checkmark]="true"
+                        [loading]="loadingDropdownSite"
+                        [style]="{width:'100%'}"
+                        (onChange)="dropdrownSiteChangeFunction($event)"
+                        inputId="float-label">
+                        <ng-template pTemplate="selectedItem">
+                            <div class="flex align-items-center gap-2" *ngIf="site">
+                                <div>{{ site.name }}</div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-site pTemplate="item">
+                            <div pTooltip="{{site.description}}"
+                                tooltipPosition="left"
+                                class="flex align-items-center gap-2">
+                                <div >
+                                    {{ site.name }}
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                <label for="float-label display-2">Choisir un site</label>
+            </p-floatLabel>
+        </div>
+    </div> -->
+</div>
+
+
+<!-- le site -->
+<div class="card">
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+
+        </ng-template>
+
+        <ng-template pTemplate="right">
+            <p-button
+                severity="success"
+                label="Nouveau site"
+                icon="pi pi-plus"
+                class="mr-2"
+                (onClick)="openNewSite()" />
+            <p-button
+                severity="help"
+                label="Exportation"
+                icon="pi pi-upload" />
+        </ng-template>
+    </p-toolbar>
+    <p-table
+        [value]="listSites"
+        [paginator]="true"
+        [rows]="10"
+        styleClass="p-datatable-striped"
+        [rowsPerPageOptions]="[10, 20, 50]"
+        selectionMode="single"
+        [rowHover]="true"
+        dataKey="id"
+        [scrollable]="true"
+        scrollHeight="600px"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true"
+        [tableStyle]="{ 'min-width': '20rem', 'min-height': '5vh', 'max-height': '50vh' }">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>#</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Rayon</th>
+                <th>Adresse</th>
+                <th>GMT</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Date de creation</th>
+                <th>traqueurs</th>
+                <th></th>
+                <!-- <th pTooltip="Date et heure d'arrivee de la derniere donnee"
+                    tooltipPosition="bottom">
+                    Date et heure emission
+                </th> -->
+
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-site let-i="rowIndex">
+            <tr>
+                <td>{{ (i+1) }}</td>
+                <td>{{site.name}}</td>
+                <td>{{site.description}}</td>
+                <td>{{site.radius}}</td>
+                <td>{{site.address}}</td>
+                <td>{{site.gmt}}</td>
+                <td>{{site.latitude}}</td>
+                <td>{{site.longitude}}</td>
+                <td>{{getLocalDateTime(site.updated_at)}}</td>
+                <td>
+                    <p-button
+                        pTooltip="{{'Cliquez pour voir la liste des traqueurs du site: '+site.sensors.length}}"
+                        tooltipPosition="bottom"
+                        icon="pi pi-eye"
+                        class="mr-2"
+                        [rounded]="true"
+                        [outlined]="true"
+                        severity="success"
+                        (onClick)="showListSensors(site)" />
+                </td>
+                <td>
+                    <p-button
+                        pTooltip="Editez le site"
+                        tooltipPosition="bottom"
+                        icon="pi pi-pencil"
+                        class="mr-2"
+                        [rounded]="true"
+                        [outlined]="true"
+                        severity="success"
+                        (onClick)="editSite(site)" />
+                    <p-button
+                        pTooltip="Supprimez le site"
+                        tooltipPosition="bottom"
+                        icon="pi pi-trash"
+                        severity="danger"
+                        [rounded]="true"
+                        [outlined]="true"
+                        (onClick)="deleteSite(site)" />
+                </td>
+
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- editer et supprimer le site -->
+<p-dialog
+    header="{{dialogEditSitesTitle}}"
+    [modal]="true"
+    [(visible)]="siteDialog"
+    [style]="{ 'min-width': '50rem', 'min-height': '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true">
+    <ng-template pTemplate="content">
+
+        <div class="field d-flex flex-row justify-content-between">
+            <label for="name">Name</label>
+            <input
+                type="text"
+                pInputText
+                id="name"
+                [(ngModel)]="site.name"
+                required
+                autofocus />
+            <small class="p-error" *ngIf="submittedSite && !site.name">
+                Name is required.
+            </small>
+        </div>
+        <div class="field d-flex flex-row justify-content-between">
+            <label for="description">description</label>
+            <input
+                type="text"
+                pInputText
+                id="description"
+                [(ngModel)]="site.description"
+                required
+                autofocus />
+            <small class="p-error" *ngIf="submittedSite && !site.description">
+                Description is required.
+            </small>
+        </div>
+        <div class="field d-flex flex-row justify-content-between">
+            <label for="address">Adresse</label>
+            <input
+                type="text"
+                pInputText
+                id="address"
+                [(ngModel)]="site.address"
+                required
+                autofocus />
+            <small class="p-error" *ngIf="submittedSite && !site.address">
+                Address is required.
+            </small>
+        </div>
+
+
+        <div class="field d-flex flex-row justify-content-between">
+            <label for="GMT">GMT</label>
+            <p-inputNumber
+                id="gmt"
+                [(ngModel)]="site.gmt"
+                mode="decimal"
+                [minFractionDigits]="1"
+                [maxFractionDigits]="10" />
+                <small class="p-error" *ngIf="submittedSite && !site.gmt">
+                    GMT is required.
+                </small>
+        </div>
+
+        <div class="field d-flex flex-row justify-content-between">
+            <label for="rayon">Rayon</label>
+            <p-inputNumber
+                id="radius"
+                [(ngModel)]="site.radius"
+                mode="decimal"
+                [minFractionDigits]="1"
+                [maxFractionDigits]="10" />
+                <small class="p-error" *ngIf="submittedSite && !site.radius">
+                    Radius is required.
+                </small>
+        </div>
+
+
+        <div class="d-flex flex-row justify-content-between">
+            <div class="field">
+                <label for="Longitude" class="mr-2">Longitude</label>
+                <p-inputNumber
+                    id="longitude"
+                    [(ngModel)]="site.longitude"
+                    mode="decimal"
+                    [minFractionDigits]="1"
+                    [maxFractionDigits]="10" />
+                <small class="p-error" *ngIf="submittedSite && !site.longitude">
+                    Longitude is required.
+                </small>
+            </div>
+            <div class="field">
+                <label for="Latitude" class="mr-2">Latitude</label>
+                <p-inputNumber
+                    id="latitude"
+                    [(ngModel)]="site.latitude"
+                    mode="decimal"
+                    [minFractionDigits]="1"
+                    [maxFractionDigits]="10" />
+                <small class="p-error" *ngIf="submittedSite && !site.latitude">
+                    Latitude is required.
+                </small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <p-button
+            label="Annuler"
+            icon="pi pi-times"
+            [text]="true"
+            (onClick)="hideSiteDialog()" />
+        <p-button
+            label="Enregistrer"
+            icon="pi pi-check"
+            [text]="true"
+            (onClick)="saveSite()" />
+    </ng-template>
+</p-dialog>
+
+<!-- voir les traqueurs -->
+<p-dialog
+    header="{{dialogSensorsTitle}}"
+    [modal]="true"
+    [(visible)]="dialogSensorsvisible"
+    [style]="{ 'min-width': '50rem', 'min-height': '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true">
+    <div class="card">
+        <p-toolbar styleClass="mb-4 gap-2">
+            <ng-template pTemplate="left">
+
+            </ng-template>
+
+            <ng-template pTemplate="right">
+                <p-button
+                    severity="success"
+                    label="Nouveau traqueur"
+                    icon="pi pi-plus"
+                    class="mr-2"
+                    (onClick)="openNewSensor()" />
+                <p-button
+                    severity="help"
+                    label="Exportation"
+                    icon="pi pi-upload" />
+            </ng-template>
+        </p-toolbar>
+        <p-table
+            [value]="listSensors"
+            [paginator]="true"
+            [rows]="10"
+            styleClass="p-datatable-striped"
+            [rowsPerPageOptions]="[10, 20, 50]"
+            selectionMode="single"
+            [rowHover]="true"
+            dataKey="id"
+            [scrollable]="true"
+            scrollHeight="600px"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true"
+            [tableStyle]="{ 'min-width': '75rem', 'min-height': '5rem' }">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>#</th>
+                    <th>Reference</th>
+                    <th>Description</th>
+                    <th>Cree le</th>
+                    <th
+                        pTooltip="Cliquez pour voir la derniere donnee"
+                        tooltipPosition="bottom">
+                        Date et heure donnee
+                    </th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-sensor let-i="rowIndex">
+                <tr>
+                    <td>{{ (i+1) }}</td>
+                    <td>{{ sensor.sensor_reference }}</td>
+                    <td>{{ sensor.description ?? "Pas de description"}}</td>
+                    <td>{{ getLocalDateTime(sensor.created_at) }}</td>
+                    <td class="text-center">
+                        <p-button
+                            pTooltip="Cliquez pour voir la derniere donnee"
+                            tooltipPosition="bottom"
+                            icon="pi pi-eye"
+                            class="mr-2"
+                            [rounded]="true"
+                            [outlined]="true"
+                            severity="success"
+                            (onClick)="showLastData(sensor)" />
+                    </td>
+                    <td>
+                        <p-button
+                            pTooltip="Editez le trqueur"
+                            tooltipPosition="bottom"
+                            icon="pi pi-pencil"
+                            class="mr-2"
+                            [rounded]="true"
+                            [outlined]="true"
+                            severity="success"
+                            (onClick)="editSensor(sensor)" />
+                        <p-button
+                            pTooltip="Supprimez le traqueur"
+                            tooltipPosition="bottom"
+                            icon="pi pi-trash"
+                            severity="danger"
+                            [rounded]="true"
+                            [outlined]="true"
+                            (onClick)="deleteSensor(sensor)" />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</p-dialog>
+
+<!-- editer et supprimer le traqueur -->
+<p-dialog
+    header="{{dialogEditSensorsTitle}}"
+    [modal]="true"
+    [(visible)]="sensorDialog"
+    [style]="{ 'min-width': '50rem', 'min-height': '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true">
+    <ng-template pTemplate="content">
+        <!-- <div class="field d-flex flex-row justify-content-between">
+            <label for="site">Site</label>
+            <p-dropdown
+                [(ngModel)]="sensor.site_id"
+                inputId="site_id"
+                [options]="listSites">
+                    <ng-template pTemplate="selectedItem">
+                        <p>{{sensor.site_id.name}}</p>
+                    </ng-template>
+                    <ng-template let-option pTemplate="item">
+                        <p pTooltip="{{option.description}}"
+                            tooltipPosition="bottom">
+                            {{option.name}}
+                        </p>
+                    </ng-template>
+            </p-dropdown>
+        </div> -->
+        <div class="field d-flex flex-row justify-content-between">
+            <label for="sensor_reference">Reference du traqueur</label>
+            <input
+                type="text"
+                pInputText
+                id="sensor_reference"
+                [(ngModel)]="sensor.sensor_reference"
+                required
+                autofocus />
+            <small class="p-error" *ngIf="submittedSensor && !sensor.sensor_reference">
+                Reference is required.
+            </small>
+        </div>
+        <div class="field d-flex flex-row justify-content-between">
+            <label for="description">Description</label>
+            <input
+                type="text"
+                pInputText
+                id="description"
+                [(ngModel)]="sensor.description"
+                required
+                autofocus />
+            <small class="p-error" *ngIf="submittedSensor && !sensor.description">
+                Description is required.
+            </small>
+        </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <p-button
+            label="Annuler"
+            icon="pi pi-times"
+            [text]="true"
+            (onClick)="hideSensorDialog()" />
+        <p-button
+            label="Enregistrer"
+            icon="pi pi-check"
+            [text]="true"
+            (onClick)="saveSensor()" />
+    </ng-template>
+</p-dialog>
+
+<!-- dernier enregistrement -->
+ <p-dialog
+    header="{{'Dernier enregistrement de '+dialogLastSensorRecordTitle}} "
+    [modal]="true"
+    [(visible)]="lastSensorRecordDialog"
+    [style]="{ 'min-width': '50rem', 'min-height': '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true">
+    <div class="row d-flex card flex-row justify-content-center">
+        <table class="table table-bordered table-striped table-hover" *ngIf="lastSensorRecord">
+            <tr [style]="{'background-color': getTableBatteryColor(lastSensorRecord.battery)}">
+                <th class="text-left fs-3"> Batterie</th>
+                <td class="text-center fs-3"> {{lastSensorRecord.battery}}</td>
+            </tr>
+            <tr>
+                <th class="text-left fs-3"> Temperature</th>
+                <td class="text-center fs-3"> {{lastSensorRecord.temperature}}</td>
+            </tr>
+            <tr>
+                <th class="text-left fs-3"> Latitude</th>
+                <td class="text-center fs-3"> {{lastSensorRecord.latitude}}</td>
+            </tr>
+            <tr>
+                <th class="text-left fs-3"> Longitude</th>
+                <td class="text-center fs-3"> {{lastSensorRecord.longitude}}</td>
+            </tr>
+            <tr>
+                <th class="text-left fs-3"> Cree le</th>
+                <td class="text-center fs-3"> {{getLocalDateTime(lastSensorRecord.created_at)}}</td>
+            </tr>
+            <tr>
+                <th class="text-left fs-3"> Modifie le</th>
+                <td class="text-center fs-3"> {{getLocalDateTime(lastSensorRecord.updated_at)}}</td>
+            </tr>
+        </table>
+        <p *ngIf="!lastSensorRecord" class="fs-3">
+            Pas de dernier enregistrement pour ce traqueur
+        </p>
+    </div>
+ </p-dialog>
+
+
+<!-- <div class="card">
+    <p-confirmDialog [style]="{ width: '450px' }" />
+</div> -->

@@ -1,0 +1,223 @@
+
+<div class="card dim d-flex align-content-center justify-content-center mx-auto table-responsive">
+    <table class="table table-hover table-striped caption-top">
+        <caption class="text-center">Vos informations</caption>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Designation</th>
+                <th>Valeur</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td> 1 </td>
+                <td> Noms et prenoms </td>
+                <td> {{user.name}} </td>
+                <td rowspan="5" class="text-center align-content-center" >
+                    <p-button
+                        severity="info"
+                        label="Modifier"
+                        icon="pi pi-user-edit"
+                        [rounded]="true"
+                        class="mr-2"
+                        (onClick)="editUserInfo()" />
+                </td>
+            </tr>
+
+            <tr>
+                <td> 2 </td>
+                <td> Email </td>
+                <td> {{user.email}} </td>
+            </tr>
+
+            <tr>
+                <td> 3 </td>
+                <td> Adresse </td>
+                <td> {{user.address}} </td>
+            </tr>
+
+            <tr>
+                <td> 4 </td>
+                <td> Contact </td>
+                <td> {{user.contact}} </td>
+            </tr>
+
+            <tr>
+                <td> 5 </td>
+                <td> Poste </td>
+                <td> {{role}} </td>
+            </tr>
+
+            <tr>
+                <td class="text-center" colspan="4">
+                    <p-button
+                        severity="warning"
+                        label="Changez mon mot de passe"
+                        icon="pi pi-pencil"
+                        class="mr-2"
+                        (onClick)="editPassword()" />
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p-dialog
+        [(visible)]="userDialog"
+        [style]="{ 'min-width': '40vw', 'min-height':'50vh' }"
+        header="Details de l'utilisateur {{user.name}}"
+        [modal]="true"
+        styleClass="p-fluid">
+        <ng-template pTemplate="content">
+
+            <div class="field">
+                <label for="name">Name</label>
+                <input
+                    type="text"
+                    pInputText
+                    id="name"
+                    [(ngModel)]="adminUser.name"
+                    required
+                    autofocus />
+                <small class="p-error" *ngIf="submittedUser && !adminUser.name">
+                    Le nom est requis.
+                </small>
+            </div>
+            <div class="field">
+                <label for="email">Email</label>
+                <input
+                    type="text"
+                    pInputText
+                    id="email"
+                    [(ngModel)]="adminUser.email"
+                    required
+                    autofocus />
+                <small class="p-error" *ngIf="submittedUser && !adminUser.email">
+                    L'adresse mail est requise.
+                </small>
+            </div>
+
+            <div class="field">
+                <label for="adresse">Adresse</label>
+                <input
+                    type="text"
+                    pInputText
+                    id="adresse"
+                    [(ngModel)]="adminUser.address"
+                    required
+                    autofocus />
+                <small class="p-error" *ngIf="submittedUser && !adminUser.address">
+                    L'adresse est requise.
+                </small>
+            </div>
+
+            <div class="field">
+                <label for="contact">Contact</label>
+                <input
+                    type="text"
+                    pInputText
+                    id="contact"
+                    [(ngModel)]="adminUser.contact"
+                    required
+                    autofocus />
+                <small class="p-error" *ngIf="submittedUser && !adminUser.contact">
+                    Le contact est requis.
+                </small>
+            </div>
+
+
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <p-button
+                label="Annuler"
+                icon="pi pi-times"
+                [text]="true"
+                (onClick)="hideUserDialog()" />
+            <p-button
+                label="Enregistrer"
+                icon="pi pi-check"
+                [text]="true"
+                (onClick)="saveUser()" />
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog
+        [(visible)]="userPasswordDialog"
+        [style]="{ 'min-width': '40vw', 'min-height':'50vh' }"
+        header="Changez le mot de passe de {{user.name}}"
+        [modal]="true"
+        styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="field py-5 my-3">
+                <p-floatLabel>
+                    <p-password
+                        required
+                        id="password"
+                        weakLabel="Tres simple"
+                        mediumLabel="Moyennement complexe"
+                        strongLabel="Mot de passe complexe"
+                        autofocus
+                        [(ngModel)]="password.lastPassword"
+                        [toggleMask]="true" />
+                    <label for="password">Ancien Mot de passe</label>
+                </p-floatLabel>
+                <small class="p-error" *ngIf="submittedUserPassword && !password.lastPassword">
+                    L'ancien mot de passe est requis.
+                </small>
+            </div>
+            <div class="field py-5">
+                <p-floatLabel>
+                    <p-password
+                        required
+                        id="newPassword"
+                        weakLabel="Tres simple"
+                        mediumLabel="Moyennement complexe"
+                        strongLabel="Mot de passe complexe"
+                        [(ngModel)]="password.password"
+                        [toggleMask]="true" />
+                    <label for="newPassword">Nouveau Mot de passe</label>
+                </p-floatLabel>
+                <small class="p-error" *ngIf="submittedUserPassword && !password.password">
+                    Le nouveau mot de passe est requis.
+                </small>
+            </div>
+            <div class="field py-5">
+                <p-floatLabel>
+                    <p-password
+                        id="passwordConfirmation"
+                        required
+                        weakLabel="Tres simple"
+                        mediumLabel="Moyennement complexe"
+                        strongLabel="Mot de passe complexe"
+                        [(ngModel)]="password.password_confirmation"
+                        [toggleMask]="true" />
+                    <label for="passwordConfirmation">Confirmation Mot de passe</label>
+                </p-floatLabel>
+                <small class="p-error" *ngIf="submittedUserPassword && !password.password_confirmation">
+                    La confirmation du mot de passe est requise.
+                </small>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <p-button
+                label="Annuler"
+                icon="pi pi-times"
+                [text]="true"
+                (onClick)="hideUserPasswordDialog()" />
+            <p-button
+                label="Enregistrer"
+                icon="pi pi-check"
+                [text]="true"
+                (onClick)="saveUserPassword()" />
+        </ng-template>
+    </p-dialog>
+</div>
+
+
+
+
+

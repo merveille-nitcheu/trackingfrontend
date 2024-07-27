@@ -1,0 +1,403 @@
+<div class="card">
+    <p-toast />
+    <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+            <p-button
+                severity="success"
+                label="Nouveau"
+                icon="pi pi-plus"
+                class="mr-2"
+                (onClick)="openNew()" />
+        </ng-template>
+
+        <ng-template pTemplate="right">
+            <p-button
+                severity="help"
+                label="Export"
+                icon="pi pi-upload" />
+        </ng-template>
+    </p-toolbar>
+
+    <p-table
+        #dt
+        [value]="listUsers"
+        [rows]="10"
+        [paginator]="true"
+        [globalFilterFields]="['name', 'email', 'address', 'contact']"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        [rowHover]="true"
+        dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true"
+    >
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+                <h5 class="m-0">Gerer les utilisateurs</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="dt.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Search..." />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 4rem">
+                    #
+                </th>
+                <th pSortableColumn="name" style="min-width:15rem">
+                    Nom <p-sortIcon field="name" />
+                </th>
+                <th pSortableColumn="email">
+                    Email <p-sortIcon field="email" />
+                </th>
+                <th pSortableColumn="address">
+                    Adresse
+                </th>
+                <th pSortableColumn="contact">
+                    Contact <p-sortIcon field="contact" />
+                </th>
+                <th>
+                    Role
+                </th>
+                <th>
+                    Site
+                </th>
+                <th></th>
+                <th>
+                    Mot de passe
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user let-i="rowIndex">
+            <tr>
+                <td>
+                    {{(i+1)}}
+                </td>
+                <td>
+                    {{ user.name }}
+                </td>
+                <td>
+                    {{user.email}}
+                </td>
+                <td>
+                    {{ user.address }}
+                </td>
+                <td>
+                    {{ user.contact }}
+                </td>
+                <td>
+                    <span *ngIf="user.roles.length > 0">{{user.roles[0].name}}</span>
+                    <span *ngIf="user.roles.length <= 0">Pas de rôle assigné</span>
+                </td>
+                <td>
+                    <p-button
+                        pTooltip="Voir les sites de {{user.name}}"
+                        tooltipPosition="bottom"
+                        icon="pi pi-eye"
+                        class="mr-2"
+                        [rounded]="true"
+                        [outlined]="true"
+                        [disabled]="getStatusDeleteUserButton(user)"
+                        severity="success"
+                        (onClick)="showUserSite(user)" />
+                </td>
+                <td>
+                    <p-button
+                        icon="pi pi-pencil"
+                        pTooltip="Modifiez les informations"
+                        tooltipPosition="bottom"
+                        class="mr-2"
+                        [rounded]="true"
+                        [outlined]="true"
+                        severity="info"
+                        [disabled]="getStatusDeleteUserButton(user)"
+                        (onClick)="editUser(user)" />
+                    <p-button
+                        icon="pi pi-trash"
+                        pTooltip="Supprimez l'utilisateur"
+                        tooltipPosition="bottom"
+                        severity="danger"
+                        [rounded]="true"
+                        [outlined]="true"
+                        [disabled]="getStatusDeleteUserButton(user)"
+                        (onClick)="deleteUser(user)" />
+                </td>
+                <td>
+                    <p-button
+                        pTooltip="Modifiez le mot de passe et envoyez le mail"
+                        tooltipPosition="bottom"
+                        icon="pi pi-spin pi-key"
+                        class="mr-2"
+                        [rounded]="true"
+                        [outlined]="true"
+                        [disabled]="getStatusDeleteUserButton(user)"
+                        severity="warning"
+                        (onClick)="initPassword(user)" />
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between">
+                In total there are {{ listUsers ? listUsers.length : 0 }} users.
+            </div>
+        </ng-template>
+    </p-table>
+
+    <p-dialog
+        [(visible)]="userDialog"
+        [style]="{ width: '450px' }"
+        header="Details de l'utilisateur {{selectedUser?.name}}"
+        [modal]="true"
+        styleClass="p-fluid">
+            <ng-template pTemplate="content">
+
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="name"
+                        [(ngModel)]="adminUser.name"
+                        required
+                        autofocus />
+                    <small class="p-error" *ngIf="submittedUser && !adminUser.name">
+                        Le nom est requis.
+                    </small>
+                </div>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="email"
+                        [(ngModel)]="adminUser.email"
+                        required
+                        autofocus />
+                    <small class="p-error" *ngIf="submittedUser && !adminUser.email">
+                        L'adresse mail est requise.
+                    </small>
+                </div>
+
+                <div class="field">
+                    <label for="adresse">Adresse</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="adresse"
+                        [(ngModel)]="adminUser.address"
+                        required
+                        autofocus />
+                    <small class="p-error" *ngIf="submittedUser && !adminUser.address">
+                        L'adresse est requise.
+                    </small>
+                </div>
+
+                <div class="field">
+                    <label for="contact">Contact</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="contact"
+                        [(ngModel)]="adminUser.contact"
+                        required
+                        autofocus />
+                    <small class="p-error" *ngIf="submittedUser && !adminUser.contact">
+                        Le contact est requis.
+                    </small>
+                </div>
+
+
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <p-button
+                    label="Annuler"
+                    icon="pi pi-times"
+                    [text]="true"
+                    (onClick)="hideUserDialog()" />
+                <p-button
+                    label="Enregistrer"
+                    icon="pi pi-check"
+                    [text]="true"
+                    (onClick)="saveUser()" />
+            </ng-template>
+    </p-dialog>
+
+
+    <!-- role dialog -->
+    <p-dialog
+        [(visible)]="roleDialog"
+        [style]="{ 'min-width': '50vw', 'min-height': '60vh' }"
+        header="Liste des sites"
+        [modal]="true"
+        [maximizable]="true"
+        styleClass="p-fluid">
+            <ng-template pTemplate="header">
+
+            </ng-template>
+            <ng-template pTemplate="content">
+                <div class="card">
+                    <p-table
+                        #dt
+                        [value]="listSites"
+                        [rows]="10"
+                        [paginator]="true"
+                        [globalFilterFields]="['name']"
+                        [tableStyle]="{ 'min-width': '75rem' }"
+                        [rowHover]="true"
+                        dataKey="id"
+                        styleClass="p-datatable-striped"
+                        [rowsPerPageOptions]="[10, 20, 50]"
+                        selectionMode="single"
+                        [scrollable]="true"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                        [tableStyle]="{ 'min-width': '20rem', 'min-height': '5vh', 'max-height': '50vh' }"
+                        [showCurrentPageReport]="true"
+                    >
+                        <ng-template pTemplate="caption">
+                            <div class="flex align-items-center justify-content-between">
+                                <h5 class="m-0 text-center">
+                                    Liste des sites de {{selectedUser.name}} /
+                                    Poste: {{selectedUser.roles.length > 0 ? selectedUser.roles[0].name : 'Indefini'}}
+                                </h5>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="width: 4rem">
+                                    #
+                                </th>
+                                <th pSortableColumn="name" style="min-width:15rem">
+                                    Nom du site <p-sortIcon field="name" />
+                                </th>
+                                <th>
+                                    Nombre de traqueurs
+                                </th>
+
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-roleSite let-i="rowIndex">
+                            <tr pTooltip="{{roleSite.description}}"
+                                tooltipPosition="left">
+                                <td>
+                                    {{(i+1)}}
+                                </td>
+                                <td >
+                                    {{ roleSite.name }}
+                                </td>
+                                <td class="flex align-items-center justify-content-center fs-3">
+                                    <p-tag severity="info" value="{{roleSite.sensors.length}}" [rounded]="true" />
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="summary">
+                            <div class="flex align-items-center justify-content-between">
+                                In total there are {{ listSites ? listSites.length : 0 }} sites.
+                            </div>
+                        </ng-template>
+                    </p-table>
+                </div>
+
+                <div class="card">
+                    <h5>Modifiez le poste de {{selectedUser.name}}</h5>
+                    <div class="flex align-items-center justify-content-around">
+                        <div class="field col-5 py-3">
+                            <p-floatLabel  [style]="{width:'100%'}">
+                                <p-dropdown
+                                    [options]="listRoles"
+                                    [(ngModel)]="formRole"
+                                    [filter]="true"
+                                    filterBy="name"
+                                    [showClear]="true"
+                                    optionLabel="Poste"
+                                    [checkmark]="true"
+                                    [loading]="loadingDropdownRole"
+                                    placeholder="Choisir le poste"
+                                    [style]="{width:'100%'}"
+                                    appendTo="body"
+                                    (onChange)="dropdrownRoleChangeFunction($event)"
+                                    inputId="float-label">
+                                    <ng-template pTemplate="selectedItem">
+                                        <div class="flex align-items-center gap-2">
+                                            <div>{{ formRole.name }}</div>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template let-role1 pTemplate="item">
+                                        <div pTooltip="{{role1.name}}"
+                                            tooltipPosition="left"
+                                            class="flex align-items-center gap-2">
+                                            <div >
+                                                {{ role1.name }}
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </p-dropdown>
+                                <label for="float-label display-2">Choisir un poste</label>
+                            </p-floatLabel>
+                        </div>
+
+                        <div class="field col-5" *ngIf="listSitesByRoleName.length > 0">
+                            <p-floatLabel  [style]="{width:'100%'}">
+                                <p-dropdown
+                                    [options]="listSitesByRoleName"
+                                    [(ngModel)]="site"
+                                    [filter]="true"
+                                    filterBy="name"
+                                    [showClear]="true"
+                                    optionLabel="name"
+                                    [checkmark]="true"
+                                    placeholder="Choisir le site"
+                                    appendTo="body"
+                                    [loading]="loadingDropdownSite"
+                                    [style]="{width:'100%'}"
+                                    (onChange)="dropdrownSiteChangeFunction($event)"
+                                    inputId="float-label">
+                                    <ng-template pTemplate="selectedItem">
+                                        <div pTooltip="{{site.description}}"
+                                            tooltipPosition="left"
+                                            class="flex align-items-center gap-2">
+                                            <div>{{ site.name }}</div>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template let-site1 pTemplate="item">
+                                        <div pTooltip="{{site1.description}}"
+                                            tooltipPosition="left"
+                                            class="flex align-items-center gap-2">
+                                            <div >
+                                                {{ site1.name }}
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </p-dropdown>
+                                <label for="float-label display-2">Choisir un site</label>
+                            </p-floatLabel>
+                        </div>
+                    </div>
+                </div>
+
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <p-button
+                    label="Annuler"
+                    icon="pi pi-times"
+                    [text]="true"
+                    (onClick)="hideRoleDialog()" />
+                <p-button
+                    label="Enregistrer"
+                    icon="pi pi-check"
+                    [text]="true"
+                    [disabled]="activeSaveRole()"
+                    (onClick)="saveRole()" />
+            </ng-template>
+    </p-dialog>
+
+    <!-- <p-confirmDialog
+        [acceptLabel]="'Oui'"
+        [rejectLabel]="'Non'"
+        [style]="{ width: '450px' }" /> -->
+</div>
