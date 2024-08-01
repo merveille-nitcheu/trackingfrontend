@@ -18,6 +18,7 @@ import { LayoutService } from 'src/app/layout/service/app.layout.service';
         }
     `]
 })
+
 export class LoginComponent {
 
     emailCheck: boolean = false;
