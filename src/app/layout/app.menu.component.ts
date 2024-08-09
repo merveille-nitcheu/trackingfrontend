@@ -113,6 +113,11 @@ export class AppMenuComponent implements OnInit {
                         routerLink: ['/work/pages/profil/user-parameters']
                     },
                     {
+                        label: "Parametres d'application",
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/work/pages/profil/app-parameters']
+                    },
+                    {
                         label: 'Deconnexion',
                         icon: 'pi pi-fw pi-sign-out',
                         routerLink: ['/work/pages/profil/deconnexion']

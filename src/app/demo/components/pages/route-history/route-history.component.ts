@@ -114,10 +114,46 @@ export class RouteHistoryComponent {
                 date_start: this.dateStart.toLocaleDateString().replaceAll("/","-")+" "+this.dateStart.toLocaleTimeString(),
                 date_end: this.dateEnd.toLocaleDateString().replaceAll("/","-")+" "+this.dateEnd.toLocaleTimeString()
             }).subscribe((res)=>{
+                this.listSensorsRecord = [];
+                this.listMarkerCircle = [];
                 console.log("res ", res);
                 if(res.success == true){
-                    this.listSensorsRecord = res.data.list_records;
+                    if(res.data.list_records.length > 0){
+                        this.listSensorsRecord = res.data.list_records;
+
+                        this.messageService.add(
+                            {
+                                severity: 'info',
+                                summary: 'Information',
+                                detail: "Parcours charge avec succes"
+                            }
+                        );
+                    }else{
+                        this.messageService.add(
+                            {
+                                severity: 'warn',
+                                summary: 'Information',
+                                detail: "Aucun enregistrement disponible dans la periode"
+                            }
+                        );
+                    }
                     this.initMap();
+                    this.messageService.add(
+                        {
+                            severity: 'info',
+                            summary: 'Information',
+                            detail: res.msg
+                        }
+                    );
+
+                }else{
+                    this.messageService.add(
+                        {
+                            severity: 'error',
+                            summary: 'Erreur',
+                            detail: res.msg
+                        }
+                    );
                 }
             });
         }
@@ -134,12 +170,20 @@ export class RouteHistoryComponent {
         return this.listCoordinates;
     }
 
+    private removeMap() {
+        // Retirer la carte de l'élément HTML
+        this.map.remove(); // Supprime la carte de Leaflet
+        this.map = null;
+        document.getElementById('map').innerHTML = ''; // Vide le contenu de l'élément
+    }
+
 
     private initMap(): void {
+        if(this.map != null){
+            this.removeMap();
+        }
         if(this.site != null && this.listSensorsRecord?.length > 0){
-            if(this.map != null){
-                this.map.remove();
-            }
+
             this.map = L.map('map', {
                 center: [ this.site.latitude, this.site.longitude],
                 zoom: 10
@@ -152,7 +196,7 @@ export class RouteHistoryComponent {
             this.map.zoomControl.setPosition('bottomright');
             tiles.addTo(this.map);
             const coordinates = this.formListCoordinates(this.listSensorsRecord);
-            const polyline = L.polyline(coordinates, { color: 'blue' }).addTo(this.map);
+            const polyline = L.polyline(coordinates, { color: '#00FF00' }).addTo(this.map);
             this.circle = this.mapService.addCircleWithRadiusToMap(this.site, this.map);
             this.listMarkerCircle = this.mapService.addManyCircleWithRadiusToMap(this.listSensorsRecord, this.map);
             console.log("list marker circle: ", this.listMarkerCircle);
