@@ -26,7 +26,7 @@ export class LayoutService {
     _config: AppConfig = {
         ripple: false,
         inputStyle: 'outlined',
-        menuMode: 'overlay', //static
+        menuMode: 'static', //static
         colorScheme: 'light',
         theme: 'lara-light-indigo',
         scale: 14,
@@ -35,7 +35,7 @@ export class LayoutService {
     config = signal<AppConfig>(this._config);
 
     state: LayoutState = {
-        staticMenuDesktopInactive: false,
+        staticMenuDesktopInactive: true,
         overlayMenuActive: false,
         profileSidebarVisible: false,
         configSidebarVisible: false,

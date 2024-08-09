@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { InputTextareaModule } from "primeng/inputtextarea";
 import { ConfigurationRoutingModule } from './configuration-routing.module';
 import { ConfigurationComponent } from './configuration.component';
 import { SitesComponent } from './sites/sites.component';
@@ -17,7 +17,8 @@ import { SharedModule } from 'src/app/demo/shared/shared.module';
   imports: [
     CommonModule,
     SharedModule,
-    ConfigurationRoutingModule
+    ConfigurationRoutingModule,
+    InputTextareaModule
   ]
 })
 export class ConfigurationModule { }

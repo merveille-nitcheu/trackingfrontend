@@ -116,7 +116,7 @@
                         severity="success"
                         (onClick)="showListSensors(site)" />
                 </td>
-                <td>
+                <td class="flex-row flex">
                     <p-button
                         pTooltip="Editez le site"
                         tooltipPosition="bottom"
@@ -146,12 +146,12 @@
     header="{{dialogEditSitesTitle}}"
     [modal]="true"
     [(visible)]="siteDialog"
-    [style]="{ 'min-width': '50rem', 'min-height': '50rem' }"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ 'min-width': '550px' }"
+    styleClass="p-fluid"
     [maximizable]="true">
     <ng-template pTemplate="content">
 
-        <div class="field d-flex flex-row justify-content-between">
+        <div class="field ">
             <label for="name">Name</label>
             <input
                 type="text"
@@ -164,7 +164,7 @@
                 Name is required.
             </small>
         </div>
-        <div class="field d-flex flex-row justify-content-between">
+        <div class="field ">
             <label for="description">description</label>
             <input
                 type="text"
@@ -177,7 +177,7 @@
                 Description is required.
             </small>
         </div>
-        <div class="field d-flex flex-row justify-content-between">
+        <div class="field">
             <label for="address">Adresse</label>
             <input
                 type="text"
@@ -192,7 +192,7 @@
         </div>
 
 
-        <div class="field d-flex flex-row justify-content-between">
+        <div class="field ">
             <label for="GMT">GMT</label>
             <p-inputNumber
                 id="gmt"
@@ -205,7 +205,7 @@
                 </small>
         </div>
 
-        <div class="field d-flex flex-row justify-content-between">
+        <div class="field ">
             <label for="rayon">Rayon</label>
             <p-inputNumber
                 id="radius"
@@ -219,7 +219,7 @@
         </div>
 
 
-        <div class="d-flex flex-row justify-content-between">
+
             <div class="field">
                 <label for="Longitude" class="mr-2">Longitude</label>
                 <p-inputNumber
@@ -244,7 +244,7 @@
                     Latitude is required.
                 </small>
             </div>
-        </div>
+
     </ng-template>
 
     <ng-template pTemplate="footer">
@@ -333,7 +333,7 @@
                             severity="success"
                             (onClick)="showLastData(sensor)" />
                     </td>
-                    <td>
+                    <td class="flex-row flex">
                         <p-button
                             pTooltip="Editez le trqueur"
                             tooltipPosition="bottom"
@@ -363,9 +363,10 @@
     header="{{dialogEditSensorsTitle}}"
     [modal]="true"
     [(visible)]="sensorDialog"
-    [style]="{ 'min-width': '50rem', 'min-height': '50rem' }"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ 'min-width': '400px' }"
+    styleClass="p-fluid"
     [maximizable]="true">
+
     <ng-template pTemplate="content">
         <!-- <div class="field d-flex flex-row justify-content-between">
             <label for="site">Site</label>
@@ -384,7 +385,7 @@
                     </ng-template>
             </p-dropdown>
         </div> -->
-        <div class="field d-flex flex-row justify-content-between">
+        <div class="field ">
             <label for="sensor_reference">Reference du traqueur</label>
             <input
                 type="text"
@@ -397,15 +398,13 @@
                 Reference is required.
             </small>
         </div>
-        <div class="field d-flex flex-row justify-content-between">
+        <div class="field ">
             <label for="description">Description</label>
-            <input
-                type="text"
-                pInputText
+            <textarea
                 id="description"
                 [(ngModel)]="sensor.description"
                 required
-                autofocus />
+                autofocus  pInputTextarea></textarea>
             <small class="p-error" *ngIf="submittedSensor && !sensor.description">
                 Description is required.
             </small>

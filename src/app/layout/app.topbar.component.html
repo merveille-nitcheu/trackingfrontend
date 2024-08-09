@@ -1,50 +1,84 @@
-
 <p-toast></p-toast>
 <div class="layout-topbar">
+    <button
+        #menubutton
+        pTooltip="Menu"
+        tooltipPosition="bottom"
+        class="p-link layout-menu-button layout-topbar-button justify-content-start m-0 border-gray-300 border-right-1 border-noround"
+        (click)="layoutService.onMenuToggle()"
+    >
+        <i class="pi pi-bars"></i>
+    </button>
+
     <a class="layout-topbar-logo" routerLink="/work/dashboard">
-        <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'lightoil' : 'lightoil'}}.svg" alt="logo">
-        <span pTooltip="Retour au Dashboard"
-            tooltipPosition="bottom">
+        <img
+            src="assets/layout/images/{{
+                layoutService.config().colorScheme === 'light'
+                    ? 'lightoil'
+                    : 'lightoil'
+            }}.svg"
+            alt="logo"
+        />
+        <span pTooltip="Retour au Dashboard" tooltipPosition="bottom">
             Tracking
         </span>
     </a>
 
-    <button #menubutton pTooltip="Menu"
-            tooltipPosition="bottom"
-            class="p-link layout-menu-button layout-topbar-button"
-            (click)="layoutService.onMenuToggle()">
-        <i class="pi pi-bars"></i>
-    </button>
-
-    <p pTooltip="Poste"
+    <!-- <p
+        pTooltip="Poste"
         tooltipPosition="bottom"
-        class="w-50 text-center fs-3 mt-2">
-        {{role}}
-    </p>
+        class="w-50 text-center fs-3 mt-2"
+    >
+        {{ role }}
+    </p> -->
 
-    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
+    <button
+        #topbarmenubutton
+        class="p-link layout-topbar-menu-button layout-topbar-button"
+        (click)="layoutService.showProfileSidebar()"
+    >
         <i class="pi pi-ellipsis-v"></i>
     </button>
 
-    <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-        <button pTooltip="{{user.name}}"
-                tooltipPosition="bottom"
-                class="p-link layout-topbar-button">
+    <div
+        #topbarmenu
+        class="layout-topbar-menu"
+        [ngClass]="{
+            'layout-topbar-menu-mobile-active':
+                layoutService.state.profileSidebarVisible
+        }"
+    >
+        <p
+            pTooltip="Poste"
+            tooltipPosition="bottom"
+            class="w-30 mt-3 ml-4 fs-5"
+        >
+            {{ role }}
+        </p>
+        <button
+            pTooltip="{{ user.name }}"
+            tooltipPosition="bottom"
+            class="p-link layout-topbar-button"
+        >
             <i class="pi pi-user"></i>
             <span>Profil</span>
         </button>
-        <button class="p-link layout-topbar-button"
+        <button
+            class="p-link layout-topbar-button"
             pTooltip="Parametres"
             tooltipPosition="bottom"
-            [routerLink]="'/documentation'">
+            [routerLink]="'/documentation'"
+        >
             <i class="pi pi-cog"></i>
             <span>Parametres</span>
         </button>
-        <p-button [styleClass]="'p-link layout-topbar-button'"
-                [loading]="loading"
-                pTooltip="Deconnexion"
-                tooltipPosition="bottom"
-                (onClick)="logout()">
+        <p-button
+            [styleClass]="'p-link layout-topbar-button'"
+            [loading]="loading"
+            pTooltip="Deconnexion"
+            tooltipPosition="bottom"
+            (onClick)="logout()"
+        >
             <i class="pi pi-sign-out"></i>
             <span>Deconnexion</span>
         </p-button>
@@ -54,4 +88,5 @@
 <p-confirmDialog
     [acceptLabel]="'Oui'"
     [rejectLabel]="'Non'"
-    [style]="{ width: '450px' }" />
+    [style]="{ width: '450px' }"
+/>

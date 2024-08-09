@@ -1,0 +1,59 @@
+::ng-deep .layout-menu ul a {
+    &:focus {
+        box-shadow: none;
+    }
+    &:hover {
+        background-color: transparent;
+        color: #2196f3;
+    }
+
+    margin-inline: -1.4rem;
+    padding-block: 1.2rem;
+}
+::ng-deep .layout-topbar .layout-menu-button{
+
+    &:hover {
+        background-color: transparent;
+        color: #2196f3;
+    }
+    &:focus {
+        box-shadow: none;
+    }
+
+}
+
+::ng-deep .layout-topbar .layout-topbar-button{
+
+
+    &:hover {
+        background-color: transparent;
+        color: #2196f3;
+    }
+    &:focus {
+        box-shadow: none;
+    }
+
+}
+
+
+
+
+
+// ::ng-deep  .p-avatar.p-avatar-lg{
+//     width:2.7rem;
+//     height: 2.7rem;
+//     margin-top: -0.2rem;
+// }
+// ::ng-deep .layout-topbar .layout-menu-button {
+//     width: 2.5rem;
+//     height: 1.5rem;
+// }
+
+// ::ng-deep .layout-topbar .layout-topbar-menu .layout-topbar-button {
+//     width: 4rem;
+//     height: 2.5rem;
+//     margin-left: -10px;
+// }
+
+
+

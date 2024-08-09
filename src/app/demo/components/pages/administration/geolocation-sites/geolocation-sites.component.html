@@ -7,14 +7,14 @@
 
 
 <!-- Voir liste des sites -->
-<div class="row d-flex flex-row justify-content-around " >
-    <div class="col-8">
+<div class="grid justify-content-around mt-6" >
+    <div class="col-12 " id="map">
         <div class="map-frame">
             <div id="map"></div>
         </div>
     </div>
 
-    <div class="col-4" *ngIf="listSites.length > 0">
+    <div class="col-12 " id="sites" *ngIf="listSites.length > 0">
         <div class="card">
             <p-table
                 [value]="listSites"
@@ -36,6 +36,9 @@
                         <th>Nom</th>
                         <th>Rayon</th>
                         <th>Adresse</th>
+                        <th>Responsable du site</th>
+                        <th>Contact Responsable  du site</th>
+                        <th>Mail Responsable  du site</th>
                         <th>traqueurs</th>
                         <th></th>
                         <!-- <th pTooltip="Date et heure d'arrivee de la derniere donnee"
@@ -61,6 +64,15 @@
                             {{site.address}}
                         </td>
                         <td>
+                            {{getContactResponsable(site).nom}}
+                        </td>
+                        <td>
+                            {{getContactResponsable(site).contact}}
+                        </td>
+                        <td>
+                            {{getContactResponsable(site).email}}
+                        </td>
+                        <td>
                             <p-button
                                 pTooltip="{{'Cliquez pour voir la liste des traqueurs du site: '+site.sensors.length}}"
                                 tooltipPosition="bottom"
@@ -73,7 +85,7 @@
                         </td>
                         <td>
                             <p-button
-                                pTooltip="{{getContactResponsable(site)+' '+'Cliquez pour centrer la map sur le site'}}"
+                                pTooltip="{{'Cliquez pour centrer la map sur le site'}}"
                                 tooltipPosition="bottom"
                                 icon="pi pi-eye"
                                 class="mr-2"

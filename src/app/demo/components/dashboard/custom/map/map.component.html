@@ -1,8 +1,8 @@
 <p-toast></p-toast>
-<div class="row p-0 mt-0 mb-1 hc-50">
+<div class="grid mt-0 mb-1 mb-6">
     <!-- <div class="col-1"></div> -->
-    <div class="col-3 flex justify-content-center">
-        <p-card  header="Traqueurs actifs ">
+    <div class="col-12 md:col-6 lg:col-4 xl:col-3 justify-content-center ">
+        <p-card  header="Traqueurs actifs" class="w-10">
             <div class="flex justify-content-around">
                 <p-button pTooltip="Nombre de traqueurs ayant emis au moins une fois dans la journee"
                     tooltipPosition="bottom"
@@ -33,7 +33,7 @@
 
         </p-card>
     </div>
-    <div class="col-3 mx-5 flex justify-content-center">
+    <div class="col-12 md:col-6 lg:col-4 xl:col-3 justify-content-center">
         <p-card header="Traqueurs batterie faible">
             <div class="flex justify-content-center">
                 <p-button pTooltip="Nombre de traqueurs ayant la batterie faible"
@@ -48,7 +48,7 @@
 
         </p-card>
     </div>
-    <div class="col-3 flex justify-content-center">
+    <div class="col-12 md:col-6 lg:col-4 xl:col-3 justify-content-center">
         <p-card header="Traqueurs hors limites">
             <div class="flex justify-content-center">
                 <p-button pTooltip="Nombre de traqueurs hors de la circonference du site"
@@ -62,8 +62,8 @@
             </div>
         </p-card>
     </div>
-    <div class="col-2 align-content-center ">
-        <div class="flex justify-content-center">
+    <div class="col-12 md:col-6 lg:col-12 xl:col-3 align-content-center ">
+        <div class="w-100 justify-content-center mt-1">
             <p-floatLabel  [style]="{width:'100%'}">
                     <p-dropdown
                         [options]="listSites"
@@ -98,7 +98,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row mb-6">
     <div class="map-frame">
         <div id="map"></div>
     </div>

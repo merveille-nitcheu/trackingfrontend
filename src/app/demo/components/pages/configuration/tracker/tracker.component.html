@@ -132,8 +132,8 @@
     header="{{dialogEditSensorsTitle}}"
     [modal]="true"
     [(visible)]="sensorDialog"
-    [style]="{ 'min-width': '50rem', 'min-height': '50rem' }"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ 'min-width': '400px' }"
+    styleClass="p-fluid"
     [maximizable]="true">
     <ng-template pTemplate="content">
         <!-- <div class="field d-flex flex-row justify-content-between">
@@ -153,7 +153,7 @@
                     </ng-template>
             </p-dropdown>
         </div> -->
-        <div class="field d-flex flex-row justify-content-between">
+        <div class="field">
             <label for="sensor_reference">Reference du traqueur</label>
             <input
                 type="text"
@@ -166,15 +166,15 @@
                 Reference is required.
             </small>
         </div>
-        <div class="field d-flex flex-row justify-content-between">
+        <div class="field ">
             <label for="description">Description</label>
-            <input
+            <textarea
                 type="text"
                 pInputText
                 id="description"
                 [(ngModel)]="sensor.description"
                 required
-                autofocus />
+                autofocus  pInputTextarea></textarea>
             <small class="p-error" *ngIf="submittedSensor && !sensor.description">
                 Description is required.
             </small>

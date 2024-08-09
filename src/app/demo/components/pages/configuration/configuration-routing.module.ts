@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NotfoundComponent } from '../../notfound/notfound.component';
 import { SitesComponent } from './sites/sites.component';
 import { TrackerComponent } from './tracker/tracker.component';
+import { MarkerComponent } from './marker/marker.component';
 
 const routes: Routes = [
     {
@@ -12,6 +13,10 @@ const routes: Routes = [
     {
         path: 'tracker',
         component: TrackerComponent
+    },
+    {
+        path: 'marker',
+        component: MarkerComponent
     },
     {
         path: 'notfound',

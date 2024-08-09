@@ -58,7 +58,13 @@ export class AppMenuComponent implements OnInit {
                                 label: 'betes',
                                 icon: 'pi pi-fw pi-times-circle',
                                 routerLink: ['/work/pages/configuration/tracker']
+                            },
+                            {
+                                label: 'Marqueurs',
+                                icon: 'pi pi-fw pi-map-marker',
+                                routerLink: ['/work/pages/configuration/marker']
                             }
+
                         ]
                     },
 

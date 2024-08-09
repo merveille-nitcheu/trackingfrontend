@@ -157,15 +157,22 @@ export class GeolocationSitesComponent {
         //this.dialogSensorsvisible = false;
     }
 
-    getContactResponsable(site:any){
-        if(site.user_site != null){
-            return 'Nom: '+site.user_site.user.email+' '+
-                    'Contact: '+site.user_site.user.contact+' '+
-                    'Email: '+site.user_site.user.email;
-        }else{
-            return 'Contact inconnu';
-        }
-    }
+  getContactResponsable(site: any): { nom: string; contact: string; email: string } {
+  if (site.user_site) {
+
+    return {
+      nom: site.user_site.user?.email || 'Nom inconnu',
+      contact: site.user_site.user?.contact || 'Contact inconnu',
+      email: site.user_site.user?.email || 'Email inconnu',
+    };
+  } else {
+    return {
+      nom: 'Contact inconnu',
+      contact: 'Contact inconnu',
+      email: 'Email inconnu',
+    };
+  }
+}
 
     showLastData(sensor:any){
         this.dialogLastSensorRecordTitle = sensor.sensor_reference;
