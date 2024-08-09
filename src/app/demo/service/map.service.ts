@@ -73,13 +73,10 @@ const blackMarker = L.icon({
 //L.Marker.prototype.options.icon = greenMarker;
 
 
-
-
 @Injectable({
   providedIn: 'root'
 })
 export class MapService {
-
 
     constructor(private mapPopupService: MapPopupService) { }
 
@@ -207,7 +204,7 @@ export class MapService {
         let listMarkerCircle:any[] = [];
         listSensorRecords.forEach((sensorRecord: any, i:number) => {
             let circle = L.circle([sensorRecord.latitude, sensorRecord.longitude], {
-                color: 'red',
+                color: '#FF0000',
                 radius: 50 // Rayon de 50 km
             });
             let popupData = {

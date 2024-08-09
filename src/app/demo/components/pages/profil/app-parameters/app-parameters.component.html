@@ -1,0 +1,40 @@
+<p-toast></p-toast>
+<div class="card m-0 mb-3 p-2">
+    <div class="row text-center fs-2 align-self-center">
+        Configuration de l'application
+    </div>
+    <div class="d-flex flex-row justify-content-around">
+        <div class="col-6 ">
+            <p-floatLabel  [style]="{width:'100%'}">
+                    <p-dropdown
+                        [options]="listSites"
+                        [(ngModel)]="site"
+                        [filter]="true"
+                        filterBy="name"
+                        [showClear]="true"
+                        optionLabel="name"
+                        [checkmark]="true"
+                        [loading]="loadingDropdownSite"
+                        [style]="{width:'100%'}"
+                        (onChange)="dropdrownSiteChangeFunction($event)"
+                        inputId="float-label">
+                        <ng-template pTemplate="selectedItem">
+                            <div class="flex align-items-center gap-2" *ngIf="site">
+                                <div>{{ site.name }}</div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-site pTemplate="item">
+                            <div pTooltip="{{site.description}}"
+                                tooltipPosition="left"
+                                class="flex align-items-center gap-2">
+                                <div >
+                                    {{ site.name }}
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                <label for="float-label display-2">Choisir un site</label>
+            </p-floatLabel>
+        </div>
+    </div>
+</div>

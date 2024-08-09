@@ -27,19 +27,21 @@
     </button>
 
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-        <button pTooltip="{{user.name}}"
+        <p-button [styleClass]="'p-link layout-topbar-button'"
+                pTooltip="{{user.name}}"
                 tooltipPosition="bottom"
-                class="p-link layout-topbar-button">
+                (onClick)="goToUserSetting()">
             <i class="pi pi-user"></i>
             <span>Profil</span>
-        </button>
-        <button class="p-link layout-topbar-button"
+        </p-button>
+        <p-button [styleClass]="'p-link layout-topbar-button'"
+            class="p-link layout-topbar-button"
             pTooltip="Parametres"
             tooltipPosition="bottom"
-            [routerLink]="'/documentation'">
+            (onClick)="goToAppSetting()">
             <i class="pi pi-cog"></i>
             <span>Parametres</span>
-        </button>
+        </p-button>
         <p-button [styleClass]="'p-link layout-topbar-button'"
                 [loading]="loading"
                 pTooltip="Deconnexion"

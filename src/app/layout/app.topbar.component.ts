@@ -97,4 +97,14 @@ export class AppTopBarComponent {
             }
         });
     }
+
+    goToUserSetting(){
+        this.router.navigateByUrl("/work/pages/profil/user-parameters");
+        console.log("Je redirige vers user setting");
+    }
+
+    goToAppSetting(){
+        this.router.navigateByUrl("/work/pages/profil/app-parameters");
+        console.log("Je redirige vers app setting");
+    }
 }
