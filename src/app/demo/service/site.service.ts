@@ -33,4 +33,8 @@ export class SiteService {
     deleteSite(usefullData:any){
         return this.http.post<any>(environment.apiUrl+'/site/delete', usefullData);
     }
+
+    addTrakerColor(usefullData:any){
+        return this.http.post<any>(environment.apiUrl+'/site/addTrakerColor', usefullData);
+    }
 }

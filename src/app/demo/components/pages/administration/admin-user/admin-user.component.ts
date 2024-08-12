@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { AuthService } from 'src/app/demo/service/auth.service';
 import { MapService } from 'src/app/demo/service/map.service';
@@ -40,7 +41,8 @@ export class AdminUserComponent {
         public messageService: MessageService,
         public siteService: SiteService,
         public confirmationService: ConfirmationService,
-        public roleService: RoleService
+        public roleService: RoleService,
+        private router: Router,
 
     ) { }
 
@@ -170,6 +172,7 @@ export class AdminUserComponent {
                                 life: 3000
                             }
                         );
+
                     }else{
                         this.messageService.add(
                             {
@@ -185,6 +188,12 @@ export class AdminUserComponent {
             this.userDialog = false;
             this.adminUser = {};
         }
+    }
+
+    AssignRole(){
+        this.router.navigate(['work','pages','administration','roles'], {
+                            replaceUrl: true,
+                        });
     }
 
     addRegisterSubData(adminUser:any){

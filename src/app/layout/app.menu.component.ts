@@ -60,9 +60,14 @@ export class AppMenuComponent implements OnInit {
                                 routerLink: ['/work/pages/configuration/tracker']
                             },
                             {
-                                label: 'Marqueurs',
+                                label: 'Traqueurs',
                                 icon: 'pi pi-fw pi-map-marker',
                                 routerLink: ['/work/pages/configuration/marker']
+                            },
+                            {
+                                label: 'Zoom',
+                                icon: 'pi pi-fw pi-search-plus',
+                                routerLink: ['/work/pages/configuration/zoom']
                             }
 
                         ]
@@ -81,6 +86,11 @@ export class AppMenuComponent implements OnInit {
                                 label: 'Utilisateurs',
                                 icon: 'pi pi-fw pi-user-plus',
                                 routerLink: ['/work/pages/administration/admin-user']
+                            },
+                            {
+                                label: 'Roles',
+                                icon: 'pi pi-fw pi-search-plus',
+                                routerLink: ['/work/pages/administration/roles']
                             }
                         ]
                     },

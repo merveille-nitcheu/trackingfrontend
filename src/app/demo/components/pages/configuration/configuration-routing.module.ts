@@ -4,6 +4,7 @@ import { NotfoundComponent } from '../../notfound/notfound.component';
 import { SitesComponent } from './sites/sites.component';
 import { TrackerComponent } from './tracker/tracker.component';
 import { MarkerComponent } from './marker/marker.component';
+import { ZoomComponent } from './zoom/zoom.component';
 
 const routes: Routes = [
     {
@@ -17,6 +18,10 @@ const routes: Routes = [
     {
         path: 'marker',
         component: MarkerComponent
+    },
+    {
+        path: 'zoom',
+        component: ZoomComponent
     },
     {
         path: 'notfound',

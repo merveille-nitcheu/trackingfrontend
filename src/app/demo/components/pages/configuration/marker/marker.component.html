@@ -1,1 +1,108 @@
-<p>marker works!</p>
+<div class="card m-0 mb-3 p-2">
+    <div class="row text-center fs-2 align-self-center">
+        Configuration des Traqueurs
+    </div>
+    <div class="d-flex flex-row justify-content-around">
+        <div class="col-6">
+            <p-floatLabel [style]="{ width: '100%' }">
+                <p-dropdown
+                    [options]="listSites"
+                    [(ngModel)]="site"
+                    [filter]="true"
+                    filterBy="name"
+                    [showClear]="true"
+                    optionLabel="name"
+                    [checkmark]="true"
+                    [loading]="loadingDropdownSite"
+                    [style]="{ width: '100%' }"
+                    inputId="float-label"
+
+                >
+                    <ng-template pTemplate="selectedItem">
+                        <div class="flex align-items-center gap-2" *ngIf="site">
+                            <div>{{ site.name }}</div>
+                        </div>
+                    </ng-template>
+                    <ng-template let-site pTemplate="item">
+                        <div
+                            pTooltip="{{ site.description }}"
+                            tooltipPosition="left"
+                            class="flex align-items-center gap-2"
+                        >
+                            <div>
+                                {{ site.name }}
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+                <label for="float-label display-2">Choisir un site</label>
+            </p-floatLabel>
+        </div>
+    </div>
+</div>
+
+<div class="grid mt-4 mx-0">
+    <div class="col-12 md:col-6 lg:col-4 xl:col-3 justify-content-center">
+        <p-orderList
+            [value]="markers"
+            [listStyle]="{ height: '20rem' }"
+            header="Categories de Traqueurs"
+        >
+            <ng-template let-marker pTemplate="item">
+                <div
+                    class="flex flex-wrap p-2 align-items-center gap-3"
+                    (click)="trakerType(marker)"
+                >
+                    <i [class]="marker.icon + ' text-sm'"></i>
+                    <div class="flex-1 flex flex-column gap-2">
+                        <span class="font-bold">{{ marker.label }}</span>
+                        <!-- <div class="flex align-items-center gap-2">
+                                <i class="pi pi-tag text-sm"></i>
+                                <span>
+                                    {{ product.category }}
+                                </span>
+                            </div> -->
+                    </div>
+                </div>
+            </ng-template>
+        </p-orderList>
+    </div>
+    <div class="col-12 md:col-6 lg:col-4 xl:col-6 justify-content-center">
+        <div
+            class="card d-flex justify-content-center align-items-center bg-transparent"
+        >
+            <img
+                [src]="
+                    'https://api.geoapify.com/v1/icon?type=awesome&color=%' +
+                    color +
+                    '&size=xx-large&icon=paw&noWhiteCircle=true&scaleFactor=2&apiKey=92464d65fcd34cb09df03891cab83a8d'
+                "
+                class="w-13rem shadow-2 flex-shrink-0 border-round align-content-center"
+            />
+        </div>
+
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-4 xl:col-3 justify-content-center">
+        <div class="w-100">
+            <p-colorPicker
+                [inline]="true"
+                class="w-100"
+                style="width: 100%; box-sizing: border-box"
+                (onChange)="onColorChange($event)"
+            ></p-colorPicker>
+
+            <div class="flex justify-content-start">
+                <p-button
+                    severity="success"
+                    label="Valider"
+                    icon="pi pi-plus"
+                    class="mr-2"
+                    (onClick)="AddColorTraker()"
+                />
+            </div>
+        </div>
+
+
+    </div>
+</div>

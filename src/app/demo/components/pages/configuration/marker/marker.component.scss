@@ -1,0 +1,32 @@
+::ng-deep .p-orderlist .p-orderlist-controls {
+    padding: 1.25rem;
+    display: none;
+}
+
+::ng-deep .p-colorpicker-panel {
+    width: 20rem !important;
+    height: 19.5rem;
+  }
+
+
+  ::ng-deep .p-colorpicker-panel .p-colorpicker-hue {
+    left: 18rem !important;
+    top: 4.8rem;
+
+  }
+
+  ::ng-deep .p-colorpicker-panel .p-colorpicker-color-selector  {
+    top: 4.8rem !important;
+    left: 4.8rem;
+  }
+
+  ::ng-deep .p-orderlist .p-orderlist-list .p-orderlist-item.p-highlight
+  {
+    color: #4b5563;
+    background: none !important;
+  }
+
+  ::ng-deep .p-orderlist .p-orderlist-list .p-orderlist-item.p-highlight.p-focus
+  {
+    background: #E0E7FF !important;
+  }
