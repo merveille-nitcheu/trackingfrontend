@@ -1,0 +1,66 @@
+<div class="stepsdemo-content">
+    <p-card>
+        <ng-template pTemplate="title">
+            Vérification des informations
+        </ng-template>
+        <ng-template pTemplate="subtitle">
+            Proceder à la validation des informations
+        </ng-template>
+        <ng-template pTemplate="content">
+            <div class="p-fluid">
+                <div class="field">
+                    <label for="name_role">Nom du Role</label>
+                    <input
+                        id="name_role"
+                        type="text"
+                        [(ngModel)]="RoleInformation.name_role"
+                        required
+                        pInputText
+                        [disabled]="true"
+                    />
+                </div>
+
+                <div class="field">
+                    <label for="description">Description</label>
+                    <input
+                        id="description"
+                        type="text"
+                        [(ngModel)]="RoleInformation.name_role"
+                        required
+                        pInputText
+                        [disabled]="true"
+                    />
+                </div>
+
+                <div class="field">
+                    <label for="permissions">Permissions</label>
+
+                    <p-chips [(ngModel)]="list_permissions" [disabled]="true" />
+                </div>
+
+                <div class="field">
+                    <label for="list_users">Utilisateurs</label>
+
+                    <p-chips [(ngModel)]="list_users" [disabled]="true" />
+                </div>
+
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="grid grid-nogutter justify-content-between">
+                <p-button
+                    label="Précédent"
+                    (onClick)="prevPage()"
+                    icon="pi pi-angle-left"
+                ></p-button>
+                <p-button
+                    label="Complete"
+                    (onClick)="complete()"
+                    icon="pi pi-angle-right"
+                    iconPos="right"
+                    styleClass="p-button-success"
+                ></p-button>
+            </div>
+        </ng-template>
+    </p-card>
+</div>

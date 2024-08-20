@@ -8,12 +8,6 @@
                 icon="pi pi-plus"
                 class="mr-2"
                 (onClick)="openNew()" />
-                <p-button
-                severity="primary"
-                label="Assigner un role"
-                icon="pi pi-arrows-alt"
-                class="mr-2"
-                (onClick)="AssignRole()" />
         </ng-template>
 
         <ng-template pTemplate="right">
@@ -309,9 +303,9 @@
                 </div>
 
                 <div class="card">
-                    <h5>Modifiez le poste de {{selectedUser.name}}</h5>
+                    <h5>Modifiez le role de {{selectedUser.name}}</h5>
                     <div class="flex align-items-center justify-content-around">
-                        <div class="field col-5 py-3">
+                        <div class="field col-10 ">
                             <p-floatLabel  [style]="{width:'100%'}">
                                 <p-dropdown
                                     [options]="listRoles"

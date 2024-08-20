@@ -37,4 +37,8 @@ export class SiteService {
     addTrakerColor(usefullData:any){
         return this.http.post<any>(environment.apiUrl+'/site/addTrakerColor', usefullData);
     }
+
+    getTrakerColor(siteId){
+        return this.http.get<any>(environment.apiUrl+'/site/addTrakerColor'+siteId);
+    }
 }

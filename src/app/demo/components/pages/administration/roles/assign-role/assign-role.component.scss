@@ -1,0 +1,27 @@
+::ng-deep .p-card .p-card-body {
+    padding: 2rem;
+    margin: 0 10rem;
+
+    @media (max-width: 768px) {
+        margin: 0;
+      }
+  }
+  ::ng-deep .p-multiselect-panel .p-multiselect-items .p-multiselect-item{
+    padding: 0.3rem 1rem;
+}
+
+::ng-deep .p-multiselect-panel .p-multiselect-header .p-multiselect-filter-container .p-multiselect-filter-icon{
+    visibility: hidden;
+}
+
+::ng-deep .p-multiselect-filter-container .p-inputtext{
+    height: 2rem;
+}
+
+::ng-deep  .p-multiselect-panel .p-multiselect-header{
+    padding: 0.3rem 1rem;
+}
+::ng-deep  .p-multiselect-panel .p-multiselect-items{
+    padding: 0.1rem 0;
+}
+

@@ -1,0 +1,144 @@
+<div class="stepsdemo-content">
+    <p-card>
+        <ng-template pTemplate="title"> Creation de Role </ng-template>
+        <ng-template pTemplate="subtitle">
+            Entrer les informations pour creer un role
+        </ng-template>
+        <ng-template pTemplate="content">
+            <div class="p-fluid">
+                <div class="field">
+                    <label for="name_role">Nom du Role</label>
+                    <input
+                        #name_role="ngModel"
+                        id="name_role"
+                        type="text"
+                        required
+                        pInputText
+                        [(ngModel)]="RoleInformation.name_role"
+                        [ngClass]="{
+                            'ng-dirty':
+                                (name_role.invalid && submitted) ||
+                                (name_role.dirty && name_role.invalid)
+                        }"
+                    />
+                    <small
+                        *ngIf="
+                            (name_role.invalid && submitted) ||
+                            (name_role.dirty && name_role.invalid)
+                        "
+                        class="p-error"
+                        >Le nom est requis.</small
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="description">Description</label>
+                    <input
+                    #description="ngModel"
+                        id="description"
+                        type="text"
+                        required
+                        pInputText
+                        [(ngModel)]="RoleInformation.description"
+                        [ngClass]="{
+                            'ng-dirty':
+                                (description.invalid && submitted) ||
+                                (description.dirty && description.invalid)
+                        }"
+                    />
+                    <small
+                        *ngIf="
+                            (description.invalid && submitted) ||
+                            (description.dirty && description.invalid)
+                        "
+                        class="p-error"
+                        >La description est requise .</small
+                    >
+                </div>
+                <div class="field">
+                    <label for="permissions">Permissions</label>
+                    <p-multiSelect
+                        #permissions="ngModel"
+                        required
+                        [options]="RoleInformation.permissions"
+                        [(ngModel)]="selectedPermissions"
+                        placeholder="Permissions"
+                        optionLabel="name"
+                        display="chip"
+                        [virtualScroll]="true"
+                        [virtualScrollItemSize]="43"
+                        class="multiselect-custom-virtual-scroll"
+                        [showClear]="true"
+                        [ngClass]="{
+                            'ng-dirty':
+                                (permissions.invalid && submitted) ||
+                                (permissions.dirty && permissions.invalid)
+                        }"
+                    >
+                        <ng-template let-permission pTemplate="item">
+                            <div class="flex align-items-center gap-2">
+                                <div>{{ permission.name }}</div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-permission pTemplate="footer">
+                            <div
+                                class="py-3 px-4 grid grid-nogutter justify-content-end"
+                            >
+                                <p-button
+                                    label="AJouter Permission"
+                                    severity="success"
+                                    (onClick)="showDialog()"
+                                    icon="pi pi-plus"
+                                    iconPos="left"
+                                ></p-button>
+                            </div>
+                        </ng-template>
+                    </p-multiSelect>
+                    <small
+                    *ngIf="
+                        (permissions.invalid && submitted) ||
+                        (permissions.dirty && permissions.invalid)
+                    "
+                    class="p-error"
+                    >Les permissions sont requises .</small
+                >
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="grid grid-nogutter justify-content-end">
+                <p-button
+                    label="Suivant"
+                    (onClick)="nextPage()"
+                    icon="pi pi-angle-right"
+                    iconPos="right"
+                ></p-button>
+            </div>
+        </ng-template>
+    </p-card>
+</div>
+
+<p-dialog
+    header="Ajouter Permission"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '25rem' }"
+>
+    <span class="p-text-secondary block mb-5"
+        >Enregistrer une nouvelle permission.</span
+    >
+    <div class="p-fluid mb-5">
+        <div class="field">
+            <label for="description">Description</label>
+            <input id="description" type="text" required pInputText />
+        </div>
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button
+            label="Annuler"
+            severity="secondary"
+            (onClick)="visible = false"
+        />
+        <p-button label="Ajouter" (onClick)="visible = false" />
+    </div>
+</p-dialog>

@@ -4,8 +4,14 @@
         <li *ngIf="item.separator" class="menu-separator"></li>
     </ng-container>
     <li>
-        <a href="https://www.primefaces.org/primeblocks-ng/#/">
-            <img width="20%" style="margin-left: 35%; margin-top: 20%;" src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'Capture2' : 'Capture'}}.PNG" alt="Light Group Logo"/>
+        <a routerLink="/work/dashboard">
+            <!-- <img width="20%" style="margin-left: 35%; margin-top: 20%;" src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'Capture2' : 'Capture'}}.PNG" alt="Light Group Logo"/> -->
+            <img
+            src="assets/layout/images/Light-Group.png"
+            alt="Light Group Logo"
+            class="h-12rem"
+            style="margin-left: 10%; "
+        />
         </a>
 
     </li>

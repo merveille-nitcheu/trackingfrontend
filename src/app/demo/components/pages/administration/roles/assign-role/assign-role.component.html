@@ -1,0 +1,81 @@
+<div class="stepsdemo-content">
+    <p-card>
+        <ng-template pTemplate="title"> Assignation du Role </ng-template>
+        <ng-template pTemplate="subtitle">
+            Assigner un role à un utilisateur
+        </ng-template>
+        <ng-template pTemplate="content">
+            <div class="p-fluid">
+                <div class="field">
+                    <label for="name_role">Nom du Role</label>
+                    <input id="name_role" type="text"  [(ngModel)]="RoleInformation.name_role"  pInputText [disabled]="true"/>
+                </div>
+
+                <div class="field">
+                    <label for="site_name">Site</label>
+                    <input id="site_name" type="text"  [(ngModel)]="RoleInformation.site_name"  pInputText [disabled]="true"/>
+                </div>
+
+
+                <div class="field">
+                    <label for="list_users">Utilisateurs</label>
+                    <p-multiSelect
+                    #list_users="ngModel"
+                    required
+                        [options]="RoleInformation.list_users"
+                        [(ngModel)]="selectedUsers"
+                        placeholder="Utilisateurs"
+                        optionLabel="name"
+                        display="chip"
+                        [virtualScroll]="true"
+                        [virtualScrollItemSize]="43"
+                        class="multiselect-custom-virtual-scroll"
+                        [showClear]="true"
+                        [ngClass]="{
+                            'ng-dirty':
+                                (list_users.invalid && submitted) ||
+                                (list_users.dirty && list_users.invalid)
+                        }"
+                    >
+
+                    <ng-template let-user pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+
+                            <div>{{ user.name }}</div>
+                        </div>
+                    </ng-template>
+                    <ng-template let-permission pTemplate="footer">
+                        <div class="py-3 px-4 grid grid-nogutter justify-content-end">
+                            <p-button
+                    label="AJouter Utilisateur"
+                    severity="success"
+                    (onClick)="adduser()"
+                    icon="pi pi-plus"
+                    iconPos="left"
+                ></p-button>
+                        </div>
+                    </ng-template>
+            </p-multiSelect>
+
+            <small
+                    *ngIf="
+                        (list_users.invalid && submitted) ||
+                        (list_users.dirty && list_users.invalid)
+                    "
+                    class="p-error"
+                    >Les utilisateurs sont requis .</small
+                >
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="grid grid-nogutter justify-content-between">
+                <p-button label="Precedent" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
+                <p-button label="Suivant" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+            </div>
+        </ng-template>
+    </p-card>
+</div>
+
+
+

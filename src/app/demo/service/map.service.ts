@@ -58,10 +58,11 @@ const greenMarker = L.icon({
     shadowAnchor: [12, 41],
     iconColor: '#00FF00' // Couleur verte
 });
-const color = '23c42121'
+// const color = '23c42121'
 
 const blackMarker = L.icon({
-    iconUrl: `https://api.geoapify.com/v1/icon?type=awesome&color=%${color}&size=x-large&icon=paw&noWhiteCircle=true&scaleFactor=2&apiKey=92464d65fcd34cb09df03891cab83a8d`,
+    iconUrl: 'assets/marker-icon-2x-black.png',
+    // iconUrl: `https://api.geoapify.com/v1/icon?type=awesome&color=%${color}&size=x-large&icon=paw&noWhiteCircle=true&scaleFactor=2&apiKey=92464d65fcd34cb09df03891cab83a8d`,
     shadowUrl: 'assets/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -79,7 +80,7 @@ const blackMarker = L.icon({
 })
 export class MapService {
 
-    constructor(private mapPopupService: MapPopupService) { }
+    constructor(private mapPopupService: MapPopupService,private http: HttpClient) { }
 
     addTrackerToMap(listLastRecordTracker:any[], map:L.map, circle:any){
         let listMarkerOutZone:any[] = [];
@@ -327,6 +328,8 @@ export class MapService {
             return false;
         }
     }
+
+
 
 
 }

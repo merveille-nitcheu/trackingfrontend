@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { RoleService } from 'src/app/demo/service/role.service';
 
 @Component({
   selector: 'app-roles',
@@ -8,23 +9,22 @@ import { MenuItem } from 'primeng/api';
 })
 export class RolesComponent {
 
-    active: number | undefined = 0;
     items: MenuItem[] | undefined;
+    RoleInformation
+
+    constructor(private RoleService: RoleService,
+    ) {
+
+    }
 
 
 
-    ngOnInit() {
-        this.items = [
-            {
-                label: 'Personal Info'
-            },
-            {
-                label: 'Reservation'
-            },
-            {
-                label: 'Review'
-            }
-        ];
+    ngOnInit(): void {
+
+        this.items = this.RoleService.items_step;
+        this.RoleInformation =  this.RoleService.RoleAssignInformation
+
+
     }
 
 }
