@@ -1,15 +1,27 @@
 import { Injectable } from '@angular/core';
+import { MapService } from './map.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapPopupService {
 
-  constructor() { }
+  constructor(
+
+  ) { }
+
+
+  convertBattery(battery: any) {
+
+
+    const percentage = (battery / 37.00000) * 100;
+    return percentage.toFixed(1); // Round to 2 decimal places
+  }
+
   makeCapitalPopup(data: any): string {
     return `` +
       `<div>Reference: ${ data.ref }</div>` +
-      `<div style="background-color:${ data.backColor}">Batterie: ${ data.bat }</div>` +
+      `<div style="background-color:${ data.backColor}">Batterie: ${ this.convertBattery(data.bat) }</div>` +
       `<div>Date et Heure: ${ data.hour }</div>`;
   }
 

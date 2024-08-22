@@ -5,6 +5,7 @@ import { SensorService } from 'src/app/demo/service/sensor.service';
 import { SiteService } from 'src/app/demo/service/site.service';
 import { UserSiteService } from 'src/app/demo/service/user-site.service';
 import * as utility from '../../../../utilities/utility';
+import { MapService } from 'src/app/demo/service/map.service';
 
 @Component({
   selector: 'app-sites',
@@ -40,6 +41,7 @@ export class SitesComponent {
     dialogLastSensorRecordTitle:string = "";
     lastSensorRecordDialog:boolean = false;
     lastSensorRecord!:any ;
+    battery:any
 
 
     constructor(public authService: AuthService,
@@ -47,6 +49,7 @@ export class SitesComponent {
         public sensorService: SensorService,
         public messageService: MessageService,
         public siteService: SiteService,
+        public mapService:MapService,
         public confirmationService: ConfirmationService
     ) { }
 
@@ -54,6 +57,7 @@ export class SitesComponent {
         this.user = this.authService.getUser();
         console.log("user: ", this.user);
         this.getListSite();
+        this.battery= this.mapService.convertBattery
     }
 
     dropdrownSiteChangeFunction(event:any){

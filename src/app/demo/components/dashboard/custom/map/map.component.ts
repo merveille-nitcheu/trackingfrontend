@@ -37,6 +37,8 @@ export class MapComponent {
     loadingDropdownSite:boolean = false;
 
     listSites!: any[];
+    battery:any
+    config
 
 
 
@@ -52,6 +54,7 @@ export class MapComponent {
 
     ngOnInit(){
         this.user = this.authService.getUser();
+        this.battery= this.mapService.convertBattery
 
     }
 
@@ -68,6 +71,19 @@ export class MapComponent {
                 this.listSites = res.data.list_sites;
                 if(this.listSites.length > 0){
                     this.site = this.listSites[0];
+                    this.siteService.getTrakerColor(this.site.id).subscribe((res)=>{
+                        if(res.success == true){
+                            this.config = res.data.config
+                        }else{
+                            this.messageService.add(
+                                {
+                                    severity: 'error',
+                                    summary: 'Information',
+                                    detail: res.msg
+                                }
+                            );
+                        }
+                    })
                     this.getListActifSensors();
                     this.map = L.map('map', {
                         center: [ this.site.latitude, this.site.longitude],
@@ -86,6 +102,18 @@ export class MapComponent {
                     this.listMarkerOutZone = dmp.marker;
                     this.listSensorOutZone = dmp.sensor;
                     this.listAllMarkerZone = dmp.mapMarker;
+                    console.log('outzone',this.listSensorOutZone)
+                    if(this.listSensorOutZone.length > 0){
+                        this.messageService.add(
+                            {
+                                severity: 'error',
+                                summary: 'Alerte',
+                                detail: 'Trakeurs Hors Zone'
+                            }
+                        );
+                    }
+
+
                     this.pusherService.bindEvent('record.sent', this.site.id, (res)=>{
                         console.log("pusher response: ",res);
                         this.updateMap(res);
@@ -146,6 +174,16 @@ export class MapComponent {
         this.listMarkerOutZone = dmp.marker;
         this.listSensorOutZone = dmp.sensor;
         this.listAllMarkerZone = dmp.mapMarker;
+        if(this.listSensorOutZone.length > 0){
+            this.messageService.add(
+                {
+                    severity: 'error',
+                    summary: 'Alerte',
+                    detail: 'Trakeurs Hors Zone'
+                }
+            );
+        }
+
         this.pusherService.bindEvent('record.sent', this.site.id, (res)=>{
             console.log("pusher response: ",this.listAllMarkerZone);
             this.updateMap(res);
@@ -171,6 +209,19 @@ export class MapComponent {
         this.listSensorOutZone = dmp.sensor;
         this.listAllMarkerZone = dmp.mapMarker;
         this.getListActifSensors();
+        if(this.listSensorOutZone.length > 0){
+
+            this.mapService.addNotification(this.listSensorOutZone).subscribe((res) => {
+
+            });
+            this.messageService.add(
+                {
+                    severity: 'error',
+                    summary: 'Alerte',
+                    detail: 'Trakeurs Hors Zone'
+                }
+            );
+        }
     }
 
     getNumMarkerOutZone(){
@@ -202,6 +253,15 @@ export class MapComponent {
                 this.listSensors = res.data.list_sensors;
                 this.listSensorsOnMap = res.data.list_sensors_on_map;
                 this.listLowBatSensors = res.data.list_low_bat_sensors;
+                if(this.listLowBatSensors.length > 0){
+                    this.messageService.add(
+                        {
+                            severity: 'error',
+                            summary: 'Alerte',
+                            detail: 'Trakeurs batterie faibles'
+                        }
+                    );
+                }
                 this.messageService.add(
                     {
                         severity: 'success',

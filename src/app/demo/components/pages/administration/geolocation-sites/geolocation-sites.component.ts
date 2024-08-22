@@ -31,6 +31,7 @@ export class GeolocationSitesComponent {
     dialogLastSensorRecordTitle:string = "";
     lastSensorRecordDialog:boolean = false;
     lastSensorRecord:any = {};
+    battery
 
     circle!:any;
     map!:any;
@@ -51,6 +52,7 @@ export class GeolocationSitesComponent {
         this.user = this.authService.getUser();
         console.log("user: ", this.user);
         this.getListSite();
+        this.battery= this.mapService.convertBattery
     }
 
     getListSite(){

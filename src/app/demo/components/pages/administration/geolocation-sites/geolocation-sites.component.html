@@ -14,7 +14,7 @@
         </div>
     </div>
 
-    <div class="col-12 " id="sites" *ngIf="listSites.length > 0">
+    <div class="col-12 mt-6" id="sites" *ngIf="listSites.length > 0">
         <div class="card">
             <p-table
                 [value]="listSites"
@@ -185,7 +185,7 @@
     <table class="table table-bordered table-striped table-hover" *ngIf="lastSensorRecord">
         <tr [style]="{'background-color': getTableBatteryColor(lastSensorRecord.battery)}">
             <th class="text-left fs-3"> Batterie</th>
-            <td class="text-center fs-3"> {{lastSensorRecord.battery}}</td>
+            <td class="text-center fs-3"> {{battery(lastSensorRecord.battery)}}</td>
         </tr>
         <tr>
             <th class="text-left fs-3"> Temperature</th>

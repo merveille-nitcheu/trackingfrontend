@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import * as L from 'leaflet';
 import * as utility from '../utilities/utility';
 import { MapPopupService } from './map-popup.service';
+import { environment } from 'src/environments/environment';
 
 const iconRetinaUrl = 'assets/marker-icon-2x-green.png';
 const iconUrl = 'assets/marker-icon.png';
@@ -91,13 +92,13 @@ export class MapService {
                 const lon = tracker.sensor_records[0].longitude;
                 const lat = tracker.sensor_records[0].latitude;
                 const marker = L.marker([lat, lon],{
-                    icon: this.getTheGoodMarker(Number(tracker.sensor_records[0].battery), tracker.sensor_records[0].created_at)
+                    icon: this.getTheGoodMarker(Number(this.convertBattery(tracker.sensor_records[0].battery)), tracker.sensor_records[0].created_at)
                 });
                 let popupData = {
                     bat: tracker.sensor_records[0].battery,
                     ref: tracker.sensor_reference,
                     hour: utility.toLocalDateTime(tracker.sensor_records[0].created_at),
-                    backColor: this.getTheBackgroundColorPopup(Number(tracker.sensor_records[0].battery))
+                    backColor: this.getTheBackgroundColorPopup(Number(this.convertBattery(tracker.sensor_records[0].battery)))
                 };
                 marker.bindPopup(this.mapPopupService.makeCapitalPopup(popupData));
                 marker.addTo(map);
@@ -148,6 +149,8 @@ export class MapService {
         };
     }
 
+
+
     updateTheLists(listLastRecordTracker:any[], circle:any){
         let listMarkerOutZone:any[] = [];
         let listSensorOutZone:any[] = [];
@@ -176,10 +179,14 @@ export class MapService {
         };
     }
 
+    addNotification(usefullData: any){
+        return this.http.post<any>(environment.apiUrl+'/sensor/add-notification', usefullData);
+    }
+
     updateTrackerToMap(tracker:any, marker:any){
         const lon = tracker.sensor_records[0].longitude;
         const lat = tracker.sensor_records[0].latitude;
-        marker.setIcon(this.getTheGoodMarker(Number(tracker.sensor_records[0].battery), tracker.sensor_records[0].created_at));
+        marker.setIcon(this.getTheGoodMarker(Number(this.convertBattery(tracker.sensor_records[0].battery)), tracker.sensor_records[0].created_at));
         marker.setLatLng([lat, lon]);
         let popupData = {
             bat: tracker.sensor_records[0].battery,
@@ -191,6 +198,13 @@ export class MapService {
         this.blinkMarker(marker, Number(tracker.sensor_records[0].battery));
         return marker;
     }
+
+    convertBattery(battery: any) {
+
+
+        const percentage = (battery / 37.00000) * 100;
+        return percentage.toFixed(1); // Round to 2 decimal places
+      }
 
     addCircleWithRadiusToMap(site:any, map:L.map){
         let circle = L.circle([site.latitude, site.longitude], {
@@ -249,7 +263,7 @@ export class MapService {
                     const lon = lastRecord.longitude;
                     const lat = lastRecord.latitude;
                     marker = L.marker([lat, lon],{
-                        icon: this.getTheGoodMarker(Number(lastRecord.battery), lastRecord.created_at)
+                        icon: this.getTheGoodMarker(Number(this.convertBattery(lastRecord.battery)), lastRecord.created_at)
                     });
                     let popupData = {
                         bat: lastRecord.battery,

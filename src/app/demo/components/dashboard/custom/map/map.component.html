@@ -151,7 +151,7 @@
                     <td>{{ getLocalDateTime(sensor.created_at) }}</td>
                     <td *ngIf="lastEmitTable==true"
                         [style]="{'background-color': getTableBatteryColor(sensor.sensor_records[0].battery)}">
-                        {{sensor.sensor_records[0].battery}}
+                        {{battery(sensor.sensor_records[0].battery)}}
                     </td>
                     <td *ngIf="lastEmitTable==true">
                         {{sensor.sensor_records[0].longitude}}

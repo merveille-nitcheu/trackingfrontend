@@ -5,6 +5,7 @@ import { SensorService } from 'src/app/demo/service/sensor.service';
 import { SiteService } from 'src/app/demo/service/site.service';
 import { UserSiteService } from 'src/app/demo/service/user-site.service';
 import * as utility from '../../../../utilities/utility';
+import { MapService } from 'src/app/demo/service/map.service';
 
 @Component({
   selector: 'app-tracker',
@@ -35,11 +36,13 @@ export class TrackerComponent {
     dialogLastSensorRecordTitle:string = "";
     lastSensorRecordDialog:boolean = false;
     lastSensorRecord!:any ;
+    battery:any
 
     constructor(public authService: AuthService,
         public userSiteService: UserSiteService,
         public sensorService: SensorService,
         public messageService: MessageService,
+        public mapService:MapService,
         public siteService: SiteService,
         public confirmationService: ConfirmationService
     ) { }
@@ -48,6 +51,7 @@ export class TrackerComponent {
         this.user = this.authService.getUser();
         console.log("user: ", this.user);
         this.getListSite();
+        this.battery= this.mapService.convertBattery
     }
 
     dropdrownSiteChangeFunction(event:any){

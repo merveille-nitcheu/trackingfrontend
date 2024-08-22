@@ -30,6 +30,7 @@ export class RouteHistoryComponent {
     dateEnd!:Date;
     circle!:any;
     map!:any;
+    battery:any
     listSensorsRecord: any[];
     listCoordinates:any[];
     listMarkerCircle:any[]=[];
@@ -49,6 +50,7 @@ export class RouteHistoryComponent {
         this.user = this.authService.getUser();
         this.maxDate.setDate(this.maxDate.getDate()+1);
         this.getListSite();
+        this.battery = this.mapService.convertBattery
     }
 
     ngAfterViewInit(): void {

@@ -35,10 +35,10 @@ export class SiteService {
     }
 
     addTrakerColor(usefullData:any){
-        return this.http.post<any>(environment.apiUrl+'/site/addTrakerColor', usefullData);
+        return this.http.post<any>(environment.apiUrl+'/site/add-traker-color', usefullData);
     }
 
     getTrakerColor(siteId){
-        return this.http.get<any>(environment.apiUrl+'/site/addTrakerColor'+siteId);
+        return this.http.get<any>(environment.apiUrl+'/site/get-traker-color-by-site-id/'+siteId);
     }
 }
