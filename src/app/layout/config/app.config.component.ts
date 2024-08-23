@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { LayoutService } from '../service/app.layout.service';
 import { MenuService } from '../app.menu.service';
 import { MessageService } from 'primeng/api';
+import { formatDate } from '@angular/common';
 
 
 
@@ -12,7 +13,8 @@ import { MessageService } from 'primeng/api';
 export class AppConfigComponent {
     @Input() minimal: boolean = false;
     notifications:any
-    nbNotifications:number = 0
+    nbNotifications:any
+    formattedDate
 
 
 
@@ -22,7 +24,9 @@ export class AppConfigComponent {
         public messageService: MessageService,
     ) {}
 
-
+    format(dateString: string) {
+        return formatDate(dateString, 'dd/MM/yyyy HH:mm:ss', 'en-US');
+    }
 
     get visible(): boolean {
         return this.layoutService.state.configSidebarVisible;
@@ -35,7 +39,7 @@ export class AppConfigComponent {
     onConfigButtonClick() {
         this.layoutService.getNotifications().subscribe((res)=>{
             if(res){
-                this.notifications = res.data;
+                this.notifications = Object.values(res.data.notifications);
                 console.log(this.notifications)
             }else{
                 this.messageService.add(
