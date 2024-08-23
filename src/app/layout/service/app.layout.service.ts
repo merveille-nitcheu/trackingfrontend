@@ -1,5 +1,8 @@
 import { Injectable, effect, signal } from '@angular/core';
 import { Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+
 
 export interface AppConfig {
     inputStyle: string;
@@ -51,7 +54,8 @@ export class LayoutService {
 
     overlayOpen$ = this.overlayOpen.asObservable();
 
-    constructor() {
+    constructor(private http: HttpClient,) {
+
         effect(() => {
             const config = this.config();
             if (this.updateStyle(config)) {
@@ -155,5 +159,9 @@ export class LayoutService {
 
     changeScale(value: number) {
         document.documentElement.style.fontSize = `${value}px`;
+    }
+
+    getNotifications(){
+        return this.http.get<any>(environment.apiUrl+'/sensor/get-notifications');
     }
 }
