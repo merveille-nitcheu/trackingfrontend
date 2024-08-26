@@ -200,7 +200,10 @@ export class MapService {
     }
 
     convertBattery(battery: any) {
-        return battery.toFixed(1); // Round to 2 decimal places
+
+
+
+        return battery; // Round to 2 decimal places
       }
 
     addCircleWithRadiusToMap(site:any, map:L.map){
