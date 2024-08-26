@@ -130,6 +130,7 @@
                     <th>Description</th>
                     <th>Cree le</th>
                     <th *ngIf="lastEmitTable==true">Batterie</th>
+                    <th *ngIf="lastEmitTable==true">Temperature(Farenheit)</th>
                     <th *ngIf="lastEmitTable==true">Longitude</th>
                     <th *ngIf="lastEmitTable==true">Latitude</th>
                     <th *ngIf="lastEmitTable==true"
@@ -152,6 +153,9 @@
                     <td *ngIf="lastEmitTable==true"
                         [style]="{'background-color': getTableBatteryColor(sensor.sensor_records[0].battery)}">
                         {{battery(sensor.sensor_records[0].battery)}}
+                    </td>
+                    <td *ngIf="lastEmitTable==true">
+                        {{sensor.sensor_records[0].temperature}}
                     </td>
                     <td *ngIf="lastEmitTable==true">
                         {{sensor.sensor_records[0].longitude}}

@@ -200,9 +200,6 @@ export class MapService {
     }
 
     convertBattery(battery: any) {
-
-
-
         return battery; // Round to 2 decimal places
       }
 

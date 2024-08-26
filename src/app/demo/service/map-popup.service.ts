@@ -12,10 +12,7 @@ export class MapPopupService {
 
 
   convertBattery(battery: any) {
-
-
-    const percentage = (battery / 37.00000) * 100;
-    return percentage.toFixed(1); // Round to 2 decimal places
+    return battery; // Round to 2 decimal places
   }
 
   makeCapitalPopup(data: any): string {
