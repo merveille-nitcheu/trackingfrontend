@@ -1,9 +1,13 @@
 <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
     <p-toast></p-toast>
     <div class="flex flex-column align-items-center justify-content-center">
-        <!-- <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="Sakai logo" class="mb-5 w-6rem flex-shrink-0"> -->
-        <p class="mb-5 w-full display-1 text-center">
-            Tracking by Light Group
+
+        <p class="w-full display-1 text-center -mb-6">
+            <img
+        src="assets/layout/images/Light-Group.png"
+        alt="logo"
+        class="h-18rem w-18rem"
+    />
         </p>
         <div style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
             <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
@@ -12,7 +16,7 @@
                     <div class="text-900 text-3xl font-medium mb-3">
                         Welcome {{getWelcomeMsg()}}
                     </div>
-                    <span class="text-600 font-medium">Sign in to continue</span>
+                    <!-- <span class="text-600 font-medium">sign in to continue</span> -->
                 </div>
 
                 <div>
@@ -34,7 +38,7 @@
                             <a class="font-medium no-underline ml-2 text-right cursor-pointer"
                                 (click)="passwordForgetFunction()"
                                 style="color: var(--primary-color)">
-                                Forgot password?
+                               mot de passe oublié?
 
                             </a>
                         </div>
@@ -43,7 +47,7 @@
                             <i *ngIf="forgetLoading == true" class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
                         </div>
                         <button pButton pRipple
-                                label="Sign In"
+                                label="Se connecter"
                                 class="w-full p-3 text-xl"
                                 [disabled]="false"
                                 (click)="login()">

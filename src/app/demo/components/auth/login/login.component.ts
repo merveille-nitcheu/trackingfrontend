@@ -63,7 +63,7 @@ export class LoginComponent {
         if(this.user && this.user != null){
             return " back "+this.user.name;
         }else{
-            return " to the sign in page";
+            return " to Light Track";
         }
     }
 

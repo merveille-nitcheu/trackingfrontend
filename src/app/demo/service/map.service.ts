@@ -200,10 +200,7 @@ export class MapService {
     }
 
     convertBattery(battery: any) {
-
-
-        const percentage = (battery / 37.00000) * 100;
-        return percentage.toFixed(1); // Round to 2 decimal places
+        return battery.toFixed(1); // Round to 2 decimal places
       }
 
     addCircleWithRadiusToMap(site:any, map:L.map){
