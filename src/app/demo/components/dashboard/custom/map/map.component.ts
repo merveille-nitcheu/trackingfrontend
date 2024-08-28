@@ -30,6 +30,7 @@ export class MapComponent {
     listLowBatSensors:any[] = [];
     listSensorsOnMap:any[] = [];
     listForTable:any[] = [];
+    commonSensors:any[] = [];
     visible = false;
     tableTitle:string = "";
     lastEmitTable:boolean = false;
@@ -60,89 +61,124 @@ export class MapComponent {
 
     ngAfterViewInit(): void {
         this.initMap();
-        console.log("site after init: ", this.site);
 
+
+    }
+
+    getListActifSensors(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.sensorService.getListActifSensorsBySiteId({ site_id: this.site.id }).subscribe((res) => {
+                if (res.success === true) {
+                    this.listActifSensors = res.data.list_actif_sensors;
+                    this.listSensors = res.data.list_sensors;
+                    this.listSensorsOnMap = res.data.list_sensors_on_map;
+                    this.listLowBatSensors = res.data.list_low_bat_sensors;
+
+                    if (this.listLowBatSensors.length > 0) {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Alerte',
+                            detail: 'Trakeurs batterie faibles'
+                        });
+                    }
+
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Information',
+                        detail: res.msg
+                    });
+                    resolve(); // Résoudre la promesse
+                } else {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Information',
+                        detail: res.msg
+                    });
+                    reject(); // Rejeter la promesse
+                }
+            });
+        });
     }
 
 
     private initMap(): void {
-        this.siteService.getListSitesForUser().subscribe((res)=>{
-            if(res.success == true){
+        this.siteService.getListSitesForUser().subscribe((res) => {
+            if (res.success == true) {
                 this.listSites = res.data.list_sites;
-                if(this.listSites.length > 0){
+                if (this.listSites.length > 0) {
                     this.site = this.listSites[0];
-                    this.siteService.getTrakerColor(this.site.id).subscribe((res)=>{
-                        if(res.success == true){
-                            this.config = res.data.config
-                        }else{
-                            this.messageService.add(
-                                {
-                                    severity: 'error',
-                                    summary: 'Information',
-                                    detail: res.msg
-                                }
-                            );
+
+                    this.siteService.getTrakerColor(this.site.id).subscribe((res) => {
+                        if (res.success == true) {
+                            this.config = res.data.config;
+                        } else {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Information',
+                                detail: res.msg
+                            });
                         }
-                    })
-                    this.getListActifSensors();
-                    this.map = L.map('map', {
-                        center: [ this.site.latitude, this.site.longitude],
-                        zoom: 10
                     });
-                    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxZoom: 18,
-                        minZoom: 3,
-                        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                    });
-                    this.map.zoomControl.setPosition('bottomright');
-                    tiles.addTo(this.map);
-                    this.circle = this.mapService.addCircleWithRadiusToMap(this.site, this.map);
-                    //list sensor with last record
-                    let dmp = this.mapService.addTrackerToMap(this.site.sensors, this.map, this.circle);
-                    this.listMarkerOutZone = dmp.marker;
-                    this.listSensorOutZone = dmp.sensor;
-                    this.listAllMarkerZone = dmp.mapMarker;
-                    console.log('outzone',this.listSensorOutZone)
-                    if(this.listSensorOutZone.length > 0){
-                        this.messageService.add(
-                            {
+
+                    // Attendre que getListActifSensors soit terminé
+                    this.getListActifSensors().then(() => {
+
+                        this.map = L.map('map', {
+                            center: [this.site.latitude, this.site.longitude],
+                            zoom: 10
+                        });
+
+                        const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 18,
+                            minZoom: 6,
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                        });
+
+                        this.map.zoomControl.setPosition('bottomright');
+                        tiles.addTo(this.map);
+                        this.circle = this.mapService.addCircleWithRadiusToMap(this.site, this.map);
+
+                        // Ajouter les capteurs à la carte
+                        let dmp = this.mapService.addTrackerToMap(this.site.sensors, this.map, this.circle);
+                        this.listMarkerOutZone = dmp.marker;
+                        this.listSensorOutZone = dmp.sensor;
+                        this.listAllMarkerZone = dmp.mapMarker;
+
+
+                        this.commonSensors = this.listSensorOutZone.filter(sensorOutZone =>
+                            this.listActifSensors.some(activeSensor => activeSensor.id === sensorOutZone.id)
+                        );
+
+
+                        if (this.commonSensors.length > 0) {
+                            this.messageService.add({
                                 severity: 'error',
                                 summary: 'Alerte',
                                 detail: 'Trakeurs Hors Zone'
-                            }
-                        );
-                    }
+                            });
+                        }
 
+                        this.pusherService.bindEvent('record.sent', this.site.id, (res) => {
+                            console.log("pusher response: ", res);
+                            this.updateMap(res);
+                        });
 
-                    this.pusherService.bindEvent('record.sent', this.site.id, (res)=>{
-                        console.log("pusher response: ",res);
-                        this.updateMap(res);
-                    });
-                    this.messageService.add(
-                        {
+                        this.messageService.add({
                             severity: 'info',
                             summary: 'Information',
                             detail: "Map initialise avec succes"
-                        }
-                    );
+                        });
+                    }).catch(() => {
+                        console.error('Erreur lors de la récupération des capteurs actifs.');
+                    });
                 }
-                this.messageService.add(
-                    {
-                        severity: 'success',
-                        summary: 'Information',
-                        detail: res.msg
-                    }
-                );
-            }else{
-                this.messageService.add(
-                    {
-                        severity: 'error',
-                        summary: 'Information',
-                        detail: res.msg
-                    }
-                );
+            } else {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Information',
+                    detail: res.msg
+                });
             }
-
         });
     }
 
@@ -157,13 +193,14 @@ export class MapComponent {
     private changeMapForNewSite(): void {
         this.map.remove();
         this.getListActifSensors();
+
         this.map = L.map('map', {
             center: [ this.site.latitude, this.site.longitude],
-            zoom: 10
+            zoom:10
         });
         const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
-            minZoom: 3,
+            minZoom: 6,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         });
         this.map.zoomControl.setPosition('bottomright');
@@ -174,7 +211,11 @@ export class MapComponent {
         this.listMarkerOutZone = dmp.marker;
         this.listSensorOutZone = dmp.sensor;
         this.listAllMarkerZone = dmp.mapMarker;
-        if(this.listSensorOutZone.length > 0){
+        this.commonSensors = this.listSensorOutZone.filter(sensorOutZone =>
+            this.listActifSensors.some(activeSensor => activeSensor.id === sensorOutZone.id)
+        );
+
+        if(this.commonSensors.length > 0){
             this.messageService.add(
                 {
                     severity: 'error',
@@ -209,9 +250,13 @@ export class MapComponent {
         this.listSensorOutZone = dmp.sensor;
         this.listAllMarkerZone = dmp.mapMarker;
         this.getListActifSensors();
-        if(this.listSensorOutZone.length > 0){
+        this.commonSensors = this.listSensorOutZone.filter(sensorOutZone =>
+            this.listActifSensors.some(activeSensor => activeSensor.id === sensorOutZone.id)
+        );
 
-            this.mapService.addNotification(this.listSensorOutZone).subscribe((res) => {
+        if(this.commonSensors.length > 0){
+
+            this.mapService.addNotification(this.commonSensors).subscribe((res) => {
 
             });
             this.messageService.add(
@@ -225,7 +270,7 @@ export class MapComponent {
     }
 
     getNumMarkerOutZone(){
-        return this.listMarkerOutZone.length;
+        return this.commonSensors.length;
     }
 
     getNumListSensors(){
@@ -244,42 +289,7 @@ export class MapComponent {
         return this.listLowBatSensors.length;
     }
 
-    getListActifSensors(){
-        this.sensorService.getListActifSensorsBySiteId({
-            site_id: this.site.id
-        }).subscribe((res)=>{
-            if(res.success === true){
-                this.listActifSensors = res.data.list_actif_sensors;
-                this.listSensors = res.data.list_sensors;
-                this.listSensorsOnMap = res.data.list_sensors_on_map;
-                this.listLowBatSensors = res.data.list_low_bat_sensors;
-                if(this.listLowBatSensors.length > 0){
-                    this.messageService.add(
-                        {
-                            severity: 'error',
-                            summary: 'Alerte',
-                            detail: 'Trakeurs batterie faibles'
-                        }
-                    );
-                }
-                this.messageService.add(
-                    {
-                        severity: 'success',
-                        summary: 'Information',
-                        detail: res.msg
-                    }
-                );
-            }else{
-                this.messageService.add(
-                    {
-                        severity: 'error',
-                        summary: 'Information',
-                        detail: res.msg
-                    }
-                );
-            }
-        });
-    }
+
 
     showMarkerOutDialog(){
         this.sensorOnMapTable = false;
@@ -333,12 +343,12 @@ export class MapComponent {
 
     centerTheMap(longitude:number, latitude:number){
         this.visible = false;
-        this.map.setView([latitude, longitude], 13);
+        this.map.setView([latitude, longitude], 18);
     }
 
     centerTheMap2(longitude:number, latitude:number, marker:any){
         this.visible = false;
-        this.map.setView([latitude, longitude], 13);
+        this.map.setView([latitude, longitude], 18);
         marker.openPopup();
     }
 

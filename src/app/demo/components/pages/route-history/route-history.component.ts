@@ -191,8 +191,8 @@ export class RouteHistoryComponent {
                 zoom: 10
             });
             const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 18,
-                minZoom: 3,
+                maxZoom: 20,
+                minZoom: 6,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             });
             this.map.zoomControl.setPosition('bottomright');
@@ -258,7 +258,7 @@ export class RouteHistoryComponent {
     }
 
     centerTheMap2(longitude:number, latitude:number, marker:any){
-        this.map.setView([latitude, longitude], 10);
+        this.map.setView([latitude, longitude], 20);
         marker.openPopup();
     }
 

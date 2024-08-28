@@ -101,6 +101,9 @@ export class MapService {
                     backColor: this.getTheBackgroundColorPopup(Number(this.convertBattery(tracker.sensor_records[0].battery)))
                 };
                 marker.bindPopup(this.mapPopupService.makeCapitalPopup(popupData));
+                marker.on('mouseover', () => {
+                    marker.bindPopup(this.mapPopupService.makeCapitalPopup(popupData)).openPopup();
+                });
                 marker.addTo(map);
                 this.blinkMarker(marker, Number(tracker.sensor_records[0].battery));
                 if(this.isMarkerInCircle(circle, marker)===false){
@@ -195,6 +198,9 @@ export class MapService {
             backColor: this.getTheBackgroundColorPopup(Number(tracker.sensor_records[0].battery))
         };
         marker.bindPopup(this.mapPopupService.makeCapitalPopup(popupData)).openPopup();
+        marker.on('mouseover', () => {
+            marker.bindPopup(this.mapPopupService.makeCapitalPopup(popupData)).openPopup();
+        });
         this.blinkMarker(marker, Number(tracker.sensor_records[0].battery));
         return marker;
     }
@@ -216,9 +222,14 @@ export class MapService {
     addManyCircleWithRadiusToMap(listSensorRecords:any, map:L.map){
         let listMarkerCircle:any[] = [];
         listSensorRecords.forEach((sensorRecord: any, i:number) => {
-            let circle = L.circle([sensorRecord.latitude, sensorRecord.longitude], {
-                color: '#FF0000',
-                radius: 50 // Rayon de 50 km
+            // let circle = L.circle([sensorRecord.latitude, sensorRecord.longitude], {
+            //     color: '#FF0000',
+            //     radius: 0.05 // Rayon de 50 km
+            // });
+            let numberIcon = L.divIcon({
+                className: 'number-icon', // Classe CSS pour le style
+                html: `<div style="color: red; font-weight: meduim; font-size: 8px;">${i + 1}</div>`, // Affiche le numéro
+
             });
             let popupData = {
                 bat: sensorRecord.battery,
@@ -226,10 +237,14 @@ export class MapService {
                 hour: utility.toLocalDateTime(sensorRecord.created_at),
                 backColor: this.getTheBackgroundColorPopup(Number(sensorRecord.battery))
             };
-            circle.addTo(map);
-            circle.bindPopup(this.mapPopupService.makeCapitalPopup(popupData)).openPopup();
+            let number = L.marker([sensorRecord.latitude, sensorRecord.longitude], { icon: numberIcon }).addTo(map);
+            // circle.addTo(map);
+            number.bindPopup(this.mapPopupService.makeCapitalPopup(popupData)).openPopup();
+            number.on('mouseover', () => {
+                number.bindPopup(this.mapPopupService.makeCapitalPopup(popupData)).openPopup();
+            });
             listMarkerCircle.push({
-                circle: circle,
+                circle: number,
                 record: sensorRecord
             });
         });
@@ -250,6 +265,9 @@ export class MapService {
         };
         circle.addTo(map);
         circle.bindPopup(this.mapPopupService.makeSitePopup(popupData)).openPopup();
+        circle.on('mouseover', () => {
+            circle.bindPopup(this.mapPopupService.makeSitePopup(popupData)).openPopup();
+        });
         if(site.sensors.length > 0){
             let listSensors:any[] = site.sensors;
             listSensors.forEach((sensors:any, index:number)=>{
@@ -269,6 +287,9 @@ export class MapService {
                         backColor: this.getTheBackgroundColorPopup(Number(lastRecord.battery))
                     };
                     marker.bindPopup(this.mapPopupService.makeCapitalPopup(popupData));
+                    marker.on('mouseover', () => {
+                        marker.bindPopup(this.mapPopupService.makeCapitalPopup(popupData)).openPopup();
+                    });
                     marker.addTo(map);
                     this.blinkMarker(marker, Number(lastRecord.battery));
                 }
