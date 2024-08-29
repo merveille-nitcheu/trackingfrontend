@@ -64,11 +64,11 @@ export class AppMenuComponent implements OnInit {
                                 icon: 'pi pi-fw pi-map-marker',
                                 routerLink: ['/work/pages/configuration/marker']
                             },
-                            {
-                                label: 'Zoom',
-                                icon: 'pi pi-fw pi-search-plus',
-                                routerLink: ['/work/pages/configuration/zoom']
-                            }
+                            // {
+                            //     label: 'Zoom',
+                            //     icon: 'pi pi-fw pi-search-plus',
+                            //     routerLink: ['/work/pages/configuration/zoom']
+                            // }
 
                         ]
                     },
@@ -99,16 +99,16 @@ export class AppMenuComponent implements OnInit {
                         label: 'Alertes et Notifications',
                         icon: 'pi pi-fw pi-bell',
                         items: [
-                            {
-                                label: "Alertes",
-                                icon: 'pi pi-fw pi-exclamation-triangle',
-                                routerLink: ['/auth/login']
-                            },
-                            {
-                                label: 'Notifications',
-                                icon: 'pi pi-fw pi-exclamation-circle',
-                                routerLink: ['/auth/access']
-                            }
+                            // {
+                            //     label: "Alertes",
+                            //     icon: 'pi pi-fw pi-exclamation-triangle',
+                            //     routerLink: ['/auth/login']
+                            // },
+                            // {
+                            //     label: 'Notifications',
+                            //     icon: 'pi pi-fw pi-exclamation-circle',
+                            //     routerLink: ['/auth/access']
+                            // }
                         ]
                     },
                 ]
