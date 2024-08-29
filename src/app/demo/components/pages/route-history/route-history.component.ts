@@ -84,27 +84,28 @@ export class RouteHistoryComponent {
     }
 
     rangeSelectFunction(event: any){
-        //console.log("event date: ", event);
+        console.log("event date: ", event);
+        console.log('range',this.rangeDates)
         if(this.rangeDates.length >= 2 && this.rangeDates[1] != null){
-            //console.log("range 1 : ", this.rangeDates);
+            console.log("range 1 : ", this.rangeDates);
             let d1 = this.rangeDates[0];
             let d2 = this.rangeDates[1];
-            this.dateStart = new Date(d1.setHours(0,0,1,1));
-            this.dateEnd = new Date(d2.setHours(23,59,59,99));
+            this.dateStart = new Date(d1);
+            this.dateEnd = new Date(d2);
+            this.dateStart.setHours(this.dateStart.getHours(), this.dateStart.getMinutes(), 0, 0);
+            this.dateEnd.setHours(this.dateEnd.getHours(), this.dateEnd.getMinutes(), 59, 999);
+            console.log("datestart : ", this.dateStart);
+            console.log("dateend : ", this.dateEnd);
         }else if(this.rangeDates.length >= 2 && this.rangeDates[1] == null){
-            //console.log("range 2 : ", this.rangeDates);
+            console.log("range 2 : ", this.rangeDates);
             let d1 = this.rangeDates[0];
             let d2 = this.rangeDates[0];
-            this.dateStart = new Date(d1.setHours(0,0,1,1));
-            this.dateEnd = new Date(d2.setHours(23,59,59,99));
-        }else{
-            this.messageService.add(
-                {
-                    severity: 'error',
-                    summary: 'Information',
-                    detail: "Selectionnez une periode de date"
-                }
-            );
+            this.dateStart = new Date(d1);
+            this.dateEnd = new Date(d2);
+            this.dateStart.setHours(this.dateStart.getHours(), this.dateStart.getMinutes(), 0, 0);
+            this.dateEnd.setHours(this.dateEnd.getHours(), this.dateEnd.getMinutes(), 59, 999);
+            console.log("datestart : ", this.dateStart);
+            console.log("dateend : ", this.dateEnd);
         }
         this.getListSensorRecordBysensorId();
     }
@@ -130,7 +131,8 @@ export class RouteHistoryComponent {
                                 detail: "Parcours charge avec succes"
                             }
                         );
-                    }else{
+                    }
+                    else{
                         this.messageService.add(
                             {
                                 severity: 'warn',

@@ -12,6 +12,8 @@
                     (onSelect)="rangeSelectFunction($event)"
                     [(ngModel)]="rangeDates"
                     selectionMode="range"
+                    [showTime]="true"
+                    [hourFormat]="24"
                     [readonlyInput]="false"
                 />
                 <label for="birth_date">Choisir une periode</label>
