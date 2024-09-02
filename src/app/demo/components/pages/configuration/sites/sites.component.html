@@ -79,6 +79,7 @@
                 <th>GMT</th>
                 <th>Latitude</th>
                 <th>Longitude</th>
+                <th>Sous sites</th>
                 <th>Date de creation</th>
                 <th>Traqueurs</th>
                 <th></th>
@@ -98,6 +99,7 @@
                 <td>{{ site.gmt }}</td>
                 <td>{{ site.latitude }}</td>
                 <td>{{ site.longitude }}</td>
+                <td>{{ site.nbsubsite }}</td>
                 <td>{{ getLocalDateTime(site.updated_at) }}</td>
                 <td>
                     <p-button
