@@ -156,6 +156,26 @@ export class SitesComponent {
         this.siteDialog = true;
     }
 
+
+    editsousSite(site: any) {
+        this.dialogEditSitesTitle = "Modification du site "+site.name;
+        this.site = {
+            "site_id" : site.id ,
+            "name" : site.name,
+            "description" :site.description,
+            "address" : site.address,
+            "radius" :site.radius,
+            "longitude" : site.longitude,
+            "latitude" : site.latitude,
+            "gmt" : site.gmt,
+            "compagny_id" : site.compagny_id,
+            "nbsubsite": site.nbsubsite
+        }
+        this.siteDialog = true;
+    }
+
+
+
     deleteSite(site: any) {
         this.confirmationService.confirm({
             message: 'Etes vous sur de vouloir supprimer ' + site.name + '?',

@@ -70,8 +70,7 @@
         [scrollable]="true"
         scrollHeight="600px"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [showCurrentPageReport]="true"
-        [tableStyle]="{ 'min-width': '75rem', 'min-height': '5rem' }">
+        [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
             <tr>
                 <th>#</th>
@@ -132,7 +131,6 @@
     header="{{dialogEditSensorsTitle}}"
     [modal]="true"
     [(visible)]="sensorDialog"
-    [style]="{ 'min-width': '400px' }"
     styleClass="p-fluid"
     [maximizable]="true">
     <ng-template pTemplate="content">
@@ -201,7 +199,7 @@
     header="{{'Dernier enregistrement de '+dialogLastSensorRecordTitle}} "
     [modal]="true"
     [(visible)]="lastSensorRecordDialog"
-    [style]="{ 'min-width': '50rem', 'min-height': '50rem' }"
+    [style]="{ 'min-width': '30rem', 'min-height': '30rem' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     [maximizable]="true">
     <div class="row d-flex card flex-row justify-content-center">
