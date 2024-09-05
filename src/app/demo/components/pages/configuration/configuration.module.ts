@@ -12,6 +12,7 @@ import { MarkerComponent } from './marker/marker.component';
 import { OrderListModule } from 'primeng/orderlist';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { ZoomComponent } from './zoom/zoom.component';
+import { TabViewModule } from 'primeng/tabview';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { ZoomComponent } from './zoom/zoom.component';
     DropdownModule,
     FloatLabelModule,
     OrderListModule,
-    ColorPickerModule
+    ColorPickerModule,
+    TabViewModule
   ]
 })
 export class ConfigurationModule { }

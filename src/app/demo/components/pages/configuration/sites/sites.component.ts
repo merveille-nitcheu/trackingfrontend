@@ -17,9 +17,11 @@ export class SitesComponent {
     user!: any;
     listSites: any[]=[];
     site:any = {};
+    subsite:any = {};
     selectedSite:any = {};
 
     listSensors!: any[];
+    listSubSites!: any[];
     sensor!:any;
     submittedSensor:boolean = false;
     sensorDialog :boolean= false;
@@ -35,6 +37,7 @@ export class SitesComponent {
 
 
     dialogEditSitesTitle:string = "";
+    dialogsensorsubSitesTitle:string = "";
     siteDialog:boolean = false;
     submittedSite:boolean = false;
 
@@ -42,6 +45,9 @@ export class SitesComponent {
     lastSensorRecordDialog:boolean = false;
     lastSensorRecord!:any ;
     battery:any
+    dialogSensorsvisiblesubsite:boolean = false
+    listSensorssubsite!: any[]
+    showbsubsite:boolean=true
 
 
     constructor(public authService: AuthService,
@@ -117,18 +123,67 @@ export class SitesComponent {
     showListSensors(site: any){
         console.log("site: ", site);
         this.selectedSite = site;
-        this.dialogSensorsTitle = "Liste des traqueurs";
-        if(site.sensors && site.sensors.length > 0){
-            this.listSensors = site.sensors;
+        this.dialogSensorsTitle = "Informations sur le site";
+        if(site.child && site.child.length > 0){
+            this.listSubSites =  site.child;
         }else{
+            this.listSubSites =  [];
+        }
+
+       if (site && site.sensors && site.sensors.length > 0) {
+            // Récupérer les capteurs du site principal
+            this.listSensors = [...site.sensors];
+
+            // Vérifier si le site a des sous-sites
+            if (site.child && site.child.length > 0) {
+                // Récupérer les capteurs de tous les sous-sites
+                site.child.forEach(child => {
+                    if (child.sensors && child.sensors.length > 0) {
+                        this.listSensors = [
+                            ...this.listSensors,
+                            ...child.sensors
+                        ];
+                    }
+                });
+            }
+
+            // Filtrer les duplications en utilisant un identifiant unique, par exemple `id`
+            const uniqueSensors = this.listSensors.filter((sensor, index, self) =>
+                index === self.findIndex((s) => s.id === sensor.id)
+            );
+
+            this.listSensors = uniqueSensors;
+        }
+        else{
             this.listSensors = [];
         }
         this.dialogSensorsvisible = true;
+        console.log(this.listSubSites)
     }
 
-    openNewSite() {
+
+    showListSensorssubsite(site: any){
+        console.log("site: ", site);
+        this.selectedSite = site;
+        this.dialogsensorsubSitesTitle = "Liste des traqueurs";
+
+        if(site.sensors && site.sensors.length > 0){
+            this.listSensorssubsite = site.sensors;
+        }else{
+            this.listSensorssubsite = [];
+        }
+        this.dialogSensorsvisiblesubsite = true;
+    }
+
+    openNewSite(subsite) {
+        console.log(subsite)
         this.dialogEditSitesTitle = "Creation d'un site";
         this.site = {};
+
+        if(subsite){
+            console.log(subsite)
+            this.showbsubsite = false
+        }
         this.submittedSite = false;
         this.siteDialog = true;
     }
@@ -151,27 +206,13 @@ export class SitesComponent {
             "longitude" : site.longitude,
             "latitude" : site.latitude,
             "gmt" : site.gmt,
-            "compagny_id" : site.compagny_id
-        }
-        this.siteDialog = true;
-    }
-
-
-    editsousSite(site: any) {
-        this.dialogEditSitesTitle = "Modification du site "+site.name;
-        this.site = {
-            "site_id" : site.id ,
-            "name" : site.name,
-            "description" :site.description,
-            "address" : site.address,
-            "radius" :site.radius,
-            "longitude" : site.longitude,
-            "latitude" : site.latitude,
-            "gmt" : site.gmt,
             "compagny_id" : site.compagny_id,
-            "nbsubsite": site.nbsubsite
+            "nbsubsite": site.nbsubsite,
+            "subsite_id" : site.site_id
+
         }
         this.siteDialog = true;
+
     }
 
 
@@ -224,6 +265,7 @@ export class SitesComponent {
 
     saveSite() {
         this.submittedSite = true;
+        console.log(this.site)
         if (this.site.name?.trim()) {
             this.site.compagny_id = this.user.compagny_id;
             console.log("site for save: ", this.site);
@@ -240,19 +282,21 @@ export class SitesComponent {
                     }
                 });
 
-            } else {
-                this.siteService.storeSite(this.site).subscribe((res)=>{
-                    if(res.success == true){
-                        this.messageService.add(
-                            { severity: 'success', summary: 'Successful', detail: res.msg, life: 3000 }
-                        );
-                    }else{
-                        this.messageService.add(
-                            { severity: 'error', summary: 'Error', detail: res.msg, life: 3000 }
-                        );
-                    }
-                });
             }
+            else
+                {
+                    this.siteService.storeSite(this.site).subscribe((res)=>{
+                        if(res.success == true){
+                            this.messageService.add(
+                                { severity: 'success', summary: 'Successful', detail: res.msg, life: 3000 }
+                            );
+                        }else{
+                            this.messageService.add(
+                                { severity: 'error', summary: 'Error', detail: res.msg, life: 3000 }
+                            );
+                        }
+                    });
+                }
             this.getListSite();
             this.siteDialog = false;
             this.site = {};
@@ -271,14 +315,31 @@ export class SitesComponent {
 
     editSensor(sensor:any){
         this.dialogEditSensorsTitle = "Modification du traqueur "+sensor.sensor_reference;
+        let subsite
+        this.listSites.forEach(site => {
+
+            if (site.id === sensor.site_id) {
+                subsite = site; // Attribuer l'ID du site
+            }
+
+            // Vérifier les sous-sites
+            if (site.child && site.child.length > 0) {
+                site.child.forEach(child => {
+                    if (child.id === sensor.site_id) {
+                        subsite = child; // Attribuer l'ID du sous-site
+                    }
+                });
+            }
+        });
         this.sensor = {
             "site_id" : sensor.site_id,
             "sensor_reference" : sensor.sensor_reference,
             "description" :sensor.description,
             "sensor_id" : sensor.id,
+            "subsite" : subsite,
         }
         this.sensorDialog = true;
-        console.log("sensor: ", sensor);
+        console.log("sensor: ", this.sensor);
     }
 
     deleteSensor(sensor:any){
@@ -330,7 +391,7 @@ export class SitesComponent {
     saveSensor(){
         this.submittedSensor = true;
         if (this.sensor.sensor_reference?.trim()) {
-            this.sensor.site_id = this.selectedSite.id;
+            this.sensor.site_id = this.sensor.subsite.id;
             console.log("sensor for save: ", this.sensor);
             if (this.sensor.sensor_id) {
                 this.sensorService.updateSensor(this.sensor).subscribe((res)=>{

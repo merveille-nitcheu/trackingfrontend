@@ -17,9 +17,12 @@ export class TrackerComponent {
     user!: any;
     listSites: any[]=[];
     site:any = {};
+    subsite:any = {}
     selectedSite:any = {};
+    subsiteforsite:any = {}
 
     listSensors!: any[];
+    listSubSites!: any[]
     sensor!:any;
     submittedSensor:boolean = false;
     sensorDialog :boolean= false;
@@ -57,9 +60,67 @@ export class TrackerComponent {
     dropdrownSiteChangeFunction(event:any){
         console.log("site: ", this.site);
         this.loadingDropdownSite = true;
-        if(this.site && this.site.sensors && this.site?.sensors.length > 0){
+
+        if(this.site && this.site.child && this.site?.child.length > 0){
             this.listSensors = this.site.sensors;
             this.selectedSite = this.site;
+            this.listSubSites =  this.site.child;
+            //this.sensor = this.site.sensors[0];
+        }else{
+            this.listSubSites = [];
+            this.messageService.add(
+                {
+                    severity: 'error',
+                    summary: 'Information',
+                    detail: "Pas de sous-sites pour ce site"
+                }
+            );
+        }
+        if (this.site && this.site.sensors && this.site.sensors.length > 0) {
+            // Récupérer les capteurs du site principal
+            this.listSensors = [...this.site.sensors];
+
+            // Vérifier si le site a des sous-sites
+            if (this.site.child && this.site.child.length > 0) {
+                // Récupérer les capteurs de tous les sous-sites
+                this.site.child.forEach(child => {
+                    if (child.sensors && child.sensors.length > 0) {
+                        this.listSensors = [
+                            ...this.listSensors,
+                            ...child.sensors
+                        ];
+                    }
+                });
+            }
+
+            // Filtrer les duplications en utilisant un identifiant unique, par exemple `id`
+            const uniqueSensors = this.listSensors.filter((sensor, index, self) =>
+                index === self.findIndex((s) => s.id === sensor.id)
+            );
+
+            this.listSensors = uniqueSensors;
+        }
+        else{
+            this.listSensors = [];
+            this.messageService.add(
+                {
+                    severity: 'error',
+                    summary: 'Information',
+                    detail: "Pas de traqueurs pour ce site"
+                }
+            );
+        }
+        this.loadingDropdownSite = false;
+        console.log("event dropdown: ", this.site);
+    }
+
+    dropdrownSubsiteChangeFunction(event:any){
+
+        console.log("site: ", this.subsiteforsite);
+        this.loadingDropdownSite = true;
+        if(this.subsiteforsite && this.subsiteforsite.sensors && this.subsiteforsite?.sensors.length > 0){
+            this.listSensors = this.subsiteforsite.sensors;
+            this.selectedSite = this.subsiteforsite;
             //this.sensor = this.site.sensors[0];
         }else{
             this.listSensors = [];
@@ -72,7 +133,7 @@ export class TrackerComponent {
             );
         }
         this.loadingDropdownSite = false;
-        console.log("event dropdown: ", this.site);
+        console.log("event dropdown: ", this.subsiteforsite);
     }
 
     getListSite(){
@@ -123,14 +184,31 @@ export class TrackerComponent {
 
     editSensor(sensor:any){
         this.dialogEditSensorsTitle = "Modification du traqueur "+sensor.sensor_reference;
+        let subsite
+        this.listSites.forEach(site => {
+
+            if (site.id === sensor.site_id) {
+                subsite = site; // Attribuer l'ID du site
+            }
+
+            // Vérifier les sous-sites
+            if (site.child && site.child.length > 0) {
+                site.child.forEach(child => {
+                    if (child.id === sensor.site_id) {
+                        subsite = child; // Attribuer l'ID du sous-site
+                    }
+                });
+            }
+        });
         this.sensor = {
             "site_id" : sensor.site_id,
             "sensor_reference" : sensor.sensor_reference,
             "description" :sensor.description,
             "sensor_id" : sensor.id,
+            "subsite" : subsite,
         }
         this.sensorDialog = true;
-        console.log("sensor: ", sensor);
+        console.log("sensor: ", this.sensor);
     }
 
     deleteSensor(sensor:any){
@@ -181,8 +259,9 @@ export class TrackerComponent {
 
     saveSensor(){
         this.submittedSensor = true;
+        console.log(this.subsite)
         if (this.sensor.sensor_reference?.trim()) {
-            this.sensor.site_id = this.selectedSite.id;
+            this.sensor.site_id = this.subsite.id;
             console.log("sensor for save: ", this.sensor);
             if (this.sensor.sensor_id) {
                 this.sensorService.updateSensor(this.sensor).subscribe((res)=>{

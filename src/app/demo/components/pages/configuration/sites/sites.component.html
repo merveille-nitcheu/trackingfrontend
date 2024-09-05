@@ -139,6 +139,11 @@
                 </td>
             </tr>
         </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="8">Pas de sites trouvés.</td>
+            </tr>
+        </ng-template>
     </p-table>
 </div>
 
@@ -249,17 +254,19 @@
                 Latitude is required.
             </small>
         </div>
-
-        <div class="field">
+        <input type="hidden" id="subsite_id" [(ngModel)]="site.subsite_id" />
+        <div
+            class="field"
+            *ngIf="site && !site.subsite_id"
+            [ngClass]="{ hidden: !showbsubsite }"
+        >
             <label for="nbsubsite" class="mr-2">Nombre de sous site</label>
             <p-inputNumber
                 id="nbsubsite"
                 [(ngModel)]="site.nbsubsite"
                 inputId="integeronly"
-                [showButtons]="true"
-
+                [disabled]="!showbsubsite"
             />
-
         </div>
     </ng-template>
 
@@ -279,11 +286,10 @@
     </ng-template>
 </p-dialog>
 
-<!-- voir les traqueurs -->
 <p-dialog
-    header="{{ dialogSensorsTitle }}"
+    header="{{ dialogsensorsubSitesTitle }}"
     [modal]="true"
-    [(visible)]="dialogSensorsvisible"
+    [(visible)]="dialogSensorsvisiblesubsite"
     [style]="{ 'min-width': '50rem', 'min-height': '50rem' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     [maximizable]="true"
@@ -308,7 +314,7 @@
             </ng-template>
         </p-toolbar>
         <p-table
-            [value]="listSensors"
+            [value]="listSensorssubsite"
             [paginator]="true"
             [rows]="10"
             styleClass="p-datatable-striped"
@@ -378,7 +384,234 @@
                     </td>
                 </tr>
             </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="8">Pas de trackers trouvés.</td>
+                </tr>
+            </ng-template>
         </p-table>
+    </div>
+</p-dialog>
+
+<!-- voir les traqueurs -->
+<p-dialog
+    header="{{ dialogSensorsTitle }}"
+    [modal]="true"
+    [(visible)]="dialogSensorsvisible"
+    [style]="{ 'min-width': '50rem', 'min-height': '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true"
+>
+    <div class="card">
+        <p-tabView>
+            <p-tabPanel header="Liste des Traqueurs">
+                <p-toolbar styleClass="mb-4 gap-2">
+                    <ng-template pTemplate="left"> </ng-template>
+
+                    <ng-template pTemplate="right">
+                        <p-button
+                            severity="success"
+                            label="Nouveau traqueur"
+                            icon="pi pi-plus"
+                            class="mr-2"
+                            (onClick)="openNewSensor()"
+                        />
+                        <p-button
+                            severity="help"
+                            label="Exportation"
+                            icon="pi pi-upload"
+                        />
+                    </ng-template>
+                </p-toolbar>
+                <p-table
+                    [value]="listSensors"
+                    [paginator]="true"
+                    [rows]="10"
+                    styleClass="p-datatable-striped"
+                    [rowsPerPageOptions]="[10, 20, 50]"
+                    selectionMode="single"
+                    [rowHover]="true"
+                    dataKey="id"
+                    [scrollable]="true"
+                    scrollHeight="600px"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [showCurrentPageReport]="true"
+                    [tableStyle]="{
+                        'min-width': '75rem',
+                        'min-height': '5rem'
+                    }"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>#</th>
+                            <th>Reference</th>
+                            <th>Description</th>
+                            <th>Cree le</th>
+                            <th
+                                pTooltip="Cliquez pour voir la derniere donnee"
+                                tooltipPosition="bottom"
+                            >
+                                Date et heure donnee
+                            </th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-sensor let-i="rowIndex">
+                        <tr>
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ sensor.sensor_reference }}</td>
+                            <td>
+                                {{ sensor.description ?? "Pas de description" }}
+                            </td>
+                            <td>{{ getLocalDateTime(sensor.created_at) }}</td>
+                            <td class="text-center">
+                                <p-button
+                                    pTooltip="Cliquez pour voir la derniere donnee"
+                                    tooltipPosition="bottom"
+                                    icon="pi pi-eye"
+                                    class="mr-2"
+                                    [rounded]="true"
+                                    [outlined]="true"
+                                    severity="success"
+                                    (onClick)="showLastData(sensor)"
+                                />
+                            </td>
+                            <td class="flex-row flex">
+                                <p-button
+                                    pTooltip="Editez le trqueur"
+                                    tooltipPosition="bottom"
+                                    icon="pi pi-pencil"
+                                    class="mr-2"
+                                    [rounded]="true"
+                                    [outlined]="true"
+                                    severity="success"
+                                    (onClick)="editSensor(sensor)"
+                                />
+                                <p-button
+                                    pTooltip="Supprimez le traqueur"
+                                    tooltipPosition="bottom"
+                                    icon="pi pi-trash"
+                                    severity="danger"
+                                    [rounded]="true"
+                                    [outlined]="true"
+                                    (onClick)="deleteSensor(sensor)"
+                                />
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="8">Pas de trackers trouvés.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-tabPanel>
+            <p-tabPanel header="Liste des Sous-sites">
+                <p-toolbar styleClass="mb-4 gap-2">
+                    <ng-template pTemplate="left"> </ng-template>
+
+                    <ng-template pTemplate="right">
+                        <!-- <p-button
+                            severity="success"
+                            label="Nouveau Sous-site"
+                            icon="pi pi-plus"
+                            class="mr-2"
+                            (onClick)="openNewSite('subsite')"
+                        /> -->
+                        <p-button
+                            severity="help"
+                            label="Exportation"
+                            icon="pi pi-upload"
+                        />
+                    </ng-template>
+                </p-toolbar>
+                <p-table
+                    [value]="listSubSites"
+                    [paginator]="true"
+                    [rows]="10"
+                    styleClass="p-datatable-striped"
+                    [rowsPerPageOptions]="[10, 20, 50]"
+                    selectionMode="single"
+                    [rowHover]="true"
+                    dataKey="id"
+                    [scrollable]="true"
+                    scrollHeight="600px"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [showCurrentPageReport]="true"
+                    [tableStyle]="{
+                        'min-width': '75rem',
+                        'min-height': '5rem'
+                    }"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>#</th>
+                            <th>Nom</th>
+                            <th>Description</th>
+                            <th>Rayon</th>
+                            <th>Latitude</th>
+                            <th>Longitude</th>
+                            <th>Cree le</th>
+                            <th>Traqueurs</th>
+
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-site let-i="rowIndex">
+                        <tr>
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ site.name }}</td>
+                            <td>{{ site.description }}</td>
+                            <td>{{ site.radius }}</td>
+                            <td>{{ site.latitude }}</td>
+                            <td>{{ site.longitude }}</td>
+                            <td>{{ getLocalDateTime(site.updated_at) }}</td>
+                            <td>
+                                <p-button
+                                    pTooltip="{{
+                                        'Cliquez pour voir la liste des traqueurs du site: ' +
+                                            site.sensors.length
+                                    }}"
+                                    tooltipPosition="bottom"
+                                    icon="pi pi-eye"
+                                    class="mr-2"
+                                    [rounded]="true"
+                                    [outlined]="true"
+                                    severity="success"
+                                    (onClick)="showListSensorssubsite(site)"
+                                />
+                            </td>
+                            <td class="flex-row flex">
+                                <p-button
+                                    pTooltip="Editez le site"
+                                    tooltipPosition="bottom"
+                                    icon="pi pi-pencil"
+                                    class="mr-2"
+                                    [rounded]="true"
+                                    [outlined]="true"
+                                    severity="success"
+                                    (onClick)="editSite(site)"
+                                />
+                                <p-button
+                                    pTooltip="Supprimez le site"
+                                    tooltipPosition="bottom"
+                                    icon="pi pi-trash"
+                                    severity="danger"
+                                    [rounded]="true"
+                                    [outlined]="true"
+                                    (onClick)="deleteSite(site)"
+                                />
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="8">Pas de sous-sites trouvés.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-tabPanel>
+        </p-tabView>
     </div>
 </p-dialog>
 
@@ -388,6 +621,7 @@
     [modal]="true"
     styleClass="p-fluid"
     [maximizable]="true"
+    [(visible)]="sensorDialog"
     [style]="{ 'min-width': '30rem', 'min-height': '30rem' }"
 >
     <ng-template pTemplate="content">
@@ -408,6 +642,40 @@
                     </ng-template>
             </p-dropdown>
         </div> -->
+        <div class="field">
+            <label for="float-label display-2">Choisir un sous-site</label>
+            <p-dropdown
+                [options]="listSubSites"
+                [(ngModel)]="sensor.subsite"
+                [showClear]="true"
+                optionLabel="name"
+                [checkmark]="true"
+                [loading]="loadingDropdownSite"
+                [style]="{ width: '100%' }"
+                inputId="float-label"
+            >
+                <ng-template pTemplate="selectedItem">
+                    <div
+                        class="flex align-items-center gap-2"
+                        *ngIf="sensor.subsite"
+                    >
+                        <div>{{ sensor.subsite?.name }}</div>
+                    </div>
+                </ng-template>
+                <ng-template let-subsite pTemplate="item">
+                    <div
+                        pTooltip="{{ sensor.subsite?.description }}"
+                        tooltipPosition="left"
+                        class="flex align-items-center gap-2"
+                    >
+                        <div>
+                            {{ sensor.subsite?.name }}
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+        </div>
+
         <div class="field">
             <label for="sensor_reference">Reference du traqueur</label>
             <input
@@ -464,6 +732,7 @@
     header="{{ 'Dernier enregistrement de ' + dialogLastSensorRecordTitle }} "
     [modal]="true"
     [(visible)]="lastSensorRecordDialog"
+    [style]="{ 'min-width': '50rem', 'min-height': '50rem' }"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
     [maximizable]="true"
 >
